@@ -16,16 +16,21 @@
   }
 }
 
+/*
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+*/
 
+/*
 .container {
   margin: 0;
 }
+*/
 
+/*
 .topNavBar {
   overflow: hidden;
   position: fixed;
@@ -37,7 +42,9 @@
   justify-content: space-between;
   background-color: #222020;
 }
+*/
 
+/*
 .topNavBarHeader {
   padding-left: 3%;
   font-weight: bold;
@@ -45,7 +52,9 @@
   font-family: 'Times New Roman', Times, serif;
   color: white;
 }
+*/
 
+/*
 .topNavBarButtons {
   display: flex;
   padding-right: 3%;
@@ -57,7 +66,9 @@
   margin-right: 20px;
   font-family: 'Times New Roman', Times, serif;
 }
+*/
 
+/*
 .middleContent {
   padding-top: 75px;
   height: 200vh;
@@ -65,7 +76,9 @@
   background-color: rgb(54, 54, 54);
   background-image: linear-gradient(to bottom, rgb(14, 20, 25), rgb(41, 41, 41));
 }
+*/
 
+/*
 .cardsContainer {
   display: flex;
   justify-content: center;
@@ -73,7 +86,9 @@
   border-color: green;
   border-width: 3px;
 }
+*/
 
+/*
 .card {
   border-width: 3px;
   border-color: aqua;
@@ -87,6 +102,7 @@
   align-items: center;
   justify-content: center;
 }
+*/
 
 .cardName {
   font-size: 50px;
