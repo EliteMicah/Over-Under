@@ -20,11 +20,13 @@ function homeScreen() {
 
       <div className="middleContent">
         <div className="cardsContainer">
-            <div className="card">
-              <p>Hello!</p>
+            <div className="card a">
+              <p className="cardName">Create</p>
+              <p className="cardText">Create a game with your friends!</p>
             </div>
-            <div className="card">
-              <p>Hello!</p>
+            <div className="card b">
+              <p className="cardName">Join</p>
+              <p className="cardText">Join a game and begin playing!</p>
             </div>
         </div>
       </div>
