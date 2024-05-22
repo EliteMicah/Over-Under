@@ -24,6 +24,11 @@ module.exports = {
       margin: {
         "9p": "9%",
       },
+      padding: {
+        75: "75px",
+        100: "100px",
+        200: "200px",
+      },
     },
     spacing: {
       1: "8px",

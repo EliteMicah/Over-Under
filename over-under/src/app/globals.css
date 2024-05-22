@@ -21,3 +21,8 @@
     text-wrap: balance;
   }
 }
+
+.square-card {
+  width: 400px;
+  height: 400px;
+}

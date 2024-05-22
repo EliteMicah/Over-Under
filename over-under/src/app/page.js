@@ -9,6 +9,8 @@ export default function Home() {
 function homeScreen() {
   return (
     <div className="m-0 box-border p-0">
+      <title>Over Under</title>
+
       <div className="flex fixed overflow-hidden top-0 h-75 w-full items-center justify-between bg-header-grey">
         <h1 className="m-5 font-bold text-2xl font-times text-white">
           <a href="http://localhost:3000" target="_blank">
@@ -36,35 +38,34 @@ function homeScreen() {
         </ul>
       </div>
 
-      <div className="h-screen pt-75 min-h-screen w-screen bg-gray-600 bg-gradient-to-b from-[#0e1419] to-[#292929]">
-        <div className="flex justify-center flex-wrap container mx-auto">
+      {/* Middle Content of the page */}
+      <div className="top-[75px] bg-gray-600 bg-gradient-to-b from-[#0e1419] to-[#292929]">
+        {/* CARD CONTAINER */}
+        <div className="flex flex-row items-center justify-center min-h-screen container mx-auto my-auto">
+          {/* CARD */}
           <a
-            href="#create-game"
-            className="no-underline block mx-4 my-6 md:mx-6 md:my-8 lg:mx-10 lg:my-10"
+            href="#Create-Game"
+            className="m-4 box-border square-card items-center justify-center bg-sky-100 rounded-xl py-2 
+              hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-md flex flex-wrap"
           >
-            <div
-              className="bg-gradient-to-b from-[#597993] to-[#292929] border-4 border-sky-800 rounded-2xl 
-              w-full sm:w-[150px] md:w-[250px] lg:w-[400px] h-full sm:h-[150px] md:h-[250px] lg:h-[400px] text-white flex flex-col items-center justify-center
-               hover:bg-blue-900 hover:opacity-80"
-            >
-              <p className="text-5xl font-impact">Create</p>
-              <p className="mt-5 text-center text-xl font-arial">
+            <div className="overflow-hidden items-center justify-center flex-col">
+              <h5 className="text-5xl font-impact text-center">Create</h5>
+              <p className="text-slate-500 text-lg p-4 text-center">
                 Create a game to play with your friends!
               </p>
             </div>
           </a>
+
+          {/* CARD 2 */}
           <a
-            href="#join-game"
-            className="no-underline block mx-4 my-6 md:mx-6 md:my-8 lg:mx-8 lg:my-10"
+            href="#Join-Game"
+            className="m-4 box-border square-card items-center justify-center bg-sky-100 rounded-xl py-2 
+              hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-sm flex flex-wrap"
           >
-            <div
-              className="bg-gradient-to-b from-[#597993] to-[#292929] border-4 border-sky-800 rounded-2xl 
-              w-full sm:w-[150px] md:w-[250px] lg:w-[400px] h-full sm:h-[150px] md:h-[250px] lg:h-[400px] text-white flex flex-col items-center justify-center
-               hover:bg-blue-900 hover:opacity-80"
-            >
-              <p className="text-5xl font-impact">Join</p>
-              <p className="mt-5 text-center text-xl font-arial">
-                Join a game and start playing!
+            <div className="overflow-hidden items-center flex-col">
+              <h5 className="text-5xl font-impact text-center">Join</h5>
+              <p className="text-slate-500 text-lg p-4 text-center">
+                Join a game to start playing!
               </p>
             </div>
           </a>
