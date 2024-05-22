@@ -43,8 +43,8 @@ function homeScreen() {
         {/* CARD CONTAINER */}
         <div className="flex flex-row items-center justify-center min-h-screen container mx-auto my-auto">
           {/* CARD */}
-          <a
-            href="#Create-Game"
+          <Link
+            href="/Create-Game"
             className="m-4 box-border square-card items-center justify-center bg-sky-100 rounded-xl py-2 
               hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-md flex flex-wrap"
           >
@@ -54,11 +54,11 @@ function homeScreen() {
                 Create a game to play with your friends!
               </p>
             </div>
-          </a>
+          </Link>
 
           {/* CARD 2 */}
-          <a
-            href="#Join-Game"
+          <Link
+            href="/Join-Game"
             className="m-4 box-border square-card items-center justify-center bg-sky-100 rounded-xl py-2 
               hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-sm flex flex-wrap"
           >
@@ -68,7 +68,7 @@ function homeScreen() {
                 Join a game to start playing!
               </p>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
