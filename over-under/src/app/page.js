@@ -50,7 +50,6 @@ export default function Home() {
           </ul>
         </div>
 
-        <cardNav />
         <div
           className="relative pt-[75px] w-lvw h-lvh dark:bg-gray-600 dark:bg-gradient-to-b from-[#0e1419] to-[#292929]
         bg-neutral-100"
