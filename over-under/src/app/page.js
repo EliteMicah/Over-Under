@@ -3,19 +3,20 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(false);
+  // Initialize darkMode based on localStorage value if it exists
+  const getInitialDarkMode = () => {
+    const savedMode = localStorage.getItem("darkMode");
+    return savedMode ? JSON.parse(savedMode) : false;
+  };
+
+  const [darkMode, setDarkMode] = useState(getInitialDarkMode);
 
   useEffect(() => {
-    const savedMode = localStorage.getItem("darkMode");
-    if (savedMode) {
-      setDarkMode(JSON.parse(savedMode));
-    }
-  }, []);
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
 
   const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(!darkMode);
-    localStorage.setItem("darkMode", JSON.stringify(newMode));
+    setDarkMode((prevMode) => !prevMode);
   };
 
   return (
