@@ -1,12 +1,21 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
 
+  useEffect(() => {
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode) {
+      setDarkMode(JSON.parse(savedMode));
+    }
+  }, []);
+
   const toggleDarkMode = () => {
+    const newMode = !darkMode;
     setDarkMode(!darkMode);
+    localStorage.setItem("darkMode", JSON.stringify(newMode));
   };
 
   return (
