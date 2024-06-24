@@ -65,7 +65,8 @@ const CreateGame = () => {
             <input
               type="text"
               className="font-bold w-300 px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
-              placeholder="Name"
+              placeholder="Finance Bros"
+              maxLength={30}
             />
             <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
               What are you betting on?
@@ -73,7 +74,8 @@ const CreateGame = () => {
             <input
               type="text"
               className="font-bold px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
-              placeholder="Bet #1"
+              placeholder="How many times will Lucy ask a question in class"
+              maxLength={120}
             />
             <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
               What else are you betting on?
@@ -81,7 +83,8 @@ const CreateGame = () => {
             <input
               type="text"
               className="font-bold px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
-              placeholder="Bet #2"
+              placeholder="Will Collin fall asleep in class"
+              maxLength={120}
             />
           </div>
 

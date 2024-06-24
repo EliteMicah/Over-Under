@@ -67,7 +67,7 @@ export default function Home() {
             hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-sm flex flex-col hover:scale-105
             max-h-full max-w-full overflow-hidden text-center"
             >
-              <h2 className="text-6xl font-impact drop-shadow-lg text-gray-950">
+              <h2 className="text-6xl font-impact drop-shadow-lg text-stone-300">
                 Create
               </h2>
               <p className="dark:text-slate-300 text-slate-200 text-lg p-4 drop-shadow-lg">
@@ -81,7 +81,7 @@ export default function Home() {
             hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-sm flex flex-col hover:scale-105
             max-h-full max-w-full overflow-hidden text-center"
             >
-              <h2 className="text-6xl font-impact drop-shadow-lg text-gray-950">
+              <h2 className="text-6xl font-impact drop-shadow-lg text-stone-300">
                 Join
               </h2>
               <p className="dark:text-slate-300 text-slate-200 text-lg p-4 drop-shadow-lg">
