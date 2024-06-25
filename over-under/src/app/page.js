@@ -23,7 +23,7 @@ export default function Home() {
     <div className={`${darkMode && "dark"}`}>
       <div className="m-0 box-border p-0">
         <div className="flex fixed overflow-hidden top-0 h-[75px] w-full items-center justify-between dark:bg-neutral-800 z-50 bg-blue-100">
-          <h1 className="m-5 font-extrabold text-2xl font-times dark:text-white drop-shadow-lg">
+          <h1 className="m-5 font-extrabold text-3xl font-times dark:text-white drop-shadow-lg">
             <Link href="http://localhost:3000">Over Under</Link>
           </h1>
           <ul className="flex px-3 items-center dark:text-white m-5 font-bold">
@@ -67,7 +67,7 @@ export default function Home() {
             hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-sm flex flex-col hover:scale-105
             max-h-full max-w-full overflow-hidden text-center"
             >
-              <h2 className="text-6xl font-impact drop-shadow-lg text-stone-300">
+              <h2 className="text-6xl font-impact drop-shadow-lg dark:text-slate-950 text-gray-200">
                 Create
               </h2>
               <p className="dark:text-slate-300 text-slate-200 text-lg p-4 drop-shadow-lg">
@@ -81,7 +81,7 @@ export default function Home() {
             hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-sm flex flex-col hover:scale-105
             max-h-full max-w-full overflow-hidden text-center"
             >
-              <h2 className="text-6xl font-impact drop-shadow-lg text-stone-300">
+              <h2 className="text-6xl font-impact drop-shadow-lg dark:text-slate-950 text-gray-200">
                 Join
               </h2>
               <p className="dark:text-slate-300 text-slate-200 text-lg p-4 drop-shadow-lg">
