@@ -64,7 +64,7 @@ export default function Home() {
             <Link
               href="/create-game"
               className="m-6 box-border square-card items-center justify-center dark:bg-sky-500 bg-sky-300 rounded-xl py-2 
-            hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-sm flex flex-col hover:scale-105
+            hover:bg-opacity-90 focus:scale-95 transition-all duration-75 ease-out shadow-lg flex flex-col hover:scale-105
             max-h-full max-w-full overflow-hidden text-center"
             >
               <h2 className="text-6xl font-impact drop-shadow-lg dark:text-slate-950 text-gray-200">

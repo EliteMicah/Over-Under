@@ -82,9 +82,14 @@ const JoinGame = () => {
           </div>
 
           <div className="flex justify-center items-center pt-7 pb-4">
-            <button className="dark:text-slate-100 dark:bg-sky-500 bg-sky-300 text-4xl font-bold font-impact border-2 rounded-lg px-4 py-3 drop-shadow-lg">
-              Join!
-            </button>
+            <Link
+              href="/"
+              className="dark:text-slate-100 dark:bg-sky-500 bg-sky-300 text-4xl font-bold font-impact border-2 
+            rounded-lg px-4 py-3 drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
+            ease-out shadow-lg"
+            >
+              <h2>Join!</h2>
+            </Link>
           </div>
         </div>
       </div>
