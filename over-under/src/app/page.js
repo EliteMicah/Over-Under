@@ -3,21 +3,40 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function Home() {
+  // State to track if the component has mounted
+  const [hasMounted, setHasMounted] = useState(false);
+
   // Initialize darkMode based on localStorage value if it exists
   const getInitialDarkMode = () => {
-    const savedMode = localStorage.getItem("darkMode");
-    return savedMode ? JSON.parse(savedMode) : false;
+    if (typeof window !== "undefined") {
+      const savedMode = localStorage.getItem("darkMode");
+      return savedMode ? JSON.parse(savedMode) : false;
+    }
+    return false; // default value for server-side rendering
   };
 
-  const [darkMode, setDarkMode] = useState(getInitialDarkMode);
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Update darkMode state after the component has mounted
+  useEffect(() => {
+    setHasMounted(true);
+    setDarkMode(getInitialDarkMode());
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem("darkMode", JSON.stringify(darkMode));
-  }, [darkMode]);
+    if (hasMounted) {
+      localStorage.setItem("darkMode", JSON.stringify(darkMode));
+    }
+  }, [darkMode, hasMounted]);
 
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
   };
+
+  // Return null if the component has not mounted to avoid mismatch between server and client
+  if (!hasMounted) {
+    return null;
+  }
 
   return (
     <div className={`${darkMode && "dark"}`}>
