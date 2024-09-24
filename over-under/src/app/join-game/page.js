@@ -70,7 +70,7 @@ const JoinGame = () => {
             />
 
             <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
-              Enter the game's special ID
+              Enter the game's ID Code
             </h2>
             <input
               type="text"

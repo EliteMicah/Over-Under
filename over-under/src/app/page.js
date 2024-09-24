@@ -2,6 +2,11 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+/* in case I forget
+terminal: cd over-under
+npm run dev
+*/
+
 export default function Home() {
   // State to track if the component has mounted
   const [hasMounted, setHasMounted] = useState(false);
@@ -76,7 +81,7 @@ export default function Home() {
         >
           <div className="flex gap-4 justify-center items-center pt-7 pb-4">
             <h1 className="font-impact text-5xl font-bold dark:text-slate-100 drop-shadow-lg">
-              A Social Betting Game!
+              Get Started!
             </h1>
           </div>
           <div className="flex gap-4 items-center justify-center">
