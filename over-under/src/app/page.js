@@ -81,8 +81,14 @@ export default function Home() {
         >
           <div className="flex gap-4 justify-center items-center pt-7 pb-4">
             <h1 className="font-impact text-5xl font-bold dark:text-slate-100 drop-shadow-lg">
-              Get Started!
+              Welcome
             </h1>
+            <Link
+              href="/user-profile"
+              className="font-impact text-5xl font-bold dark:text-slate-100 drop-shadow-lg"
+            >
+              User123
+            </Link>
           </div>
           <div className="flex gap-4 items-center justify-center">
             <Link
