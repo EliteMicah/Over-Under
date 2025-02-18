@@ -1,0 +1,17 @@
+.moving-background {
+  background-image: url("/minimalBackground.svg"); /* Ensure correct path */
+  background-size: 15%; /* Adjust to make the SVG smaller */
+  background-repeat: repeat; /* Keeps pattern tiled */
+  background-position: top;
+  height: 90vh;
+  animation: moveBackground 80s linear infinite;
+}
+
+@keyframes moveBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
