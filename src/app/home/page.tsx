@@ -1,6 +1,8 @@
 // cd SWE-Over-Under
 // npm run dev
 
+// For tailwind https://tailwindcss.com/
+
 "use client";
 
 import Link from "next/link";
@@ -55,6 +57,7 @@ export default function HomePage() {
           </button>
         </nav>
       </header>
+
       <div className="moving-background">
         <div className="flex flex-row flex-wrap justify-center place-items-center">
           <h2 className="font-Modak text-7xl mt-[80px] drop-shadow-md">

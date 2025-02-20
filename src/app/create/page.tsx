@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import "../../app/BackgroundAnimation.css";
 
 function createPage() {
   return (
@@ -52,37 +53,38 @@ function createPage() {
         </nav>
       </header>
 
-      <div className="relative pt-[75px] w-lvw h-lvh dark:bg-gradient-to-b from-[#0e1419] to-[#292929] bg-neutral-100">
-        <div className="flex gap-4 justify-center items-center pt-7 pb-4">
-          <h1 className="font-Modak text-7xl font-bold dark:text-slate-100 drop-shadow-lg">
-            Create your Ruleset!
-          </h1>
-        </div>
+      <div className="bg-neutral-100">
+        <div className="relative pt-[50px] w-lvw h-lvh">
+          <div className="flex gap-4 justify-center items-center pb-4">
+            <h1 className="font-Modak text-5xl font-bold dark:text-slate-100 drop-shadow-lg">
+              Create your Ruleset!
+            </h1>
+          </div>
 
-        <div className="flex flex-col flex-wrap gap-1 mx-400">
-          <h2 className="font-bold font-Modak text-xl dark:text-slate-100 drop-shadow-lg">
-            Name your game!
-          </h2>
-          <input
-            type="text"
-            className="font-bold w-300 px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
-            placeholder="Finance Bros"
-            maxLength={30}
-            // value={gameName}
-          />
+          <div className="flex flex-col flex-wrap gap-1 mx-400">
+            <h2 className="font-bold font-Modak text-xl dark:text-slate-100 drop-shadow-lg">
+              Name your game!
+            </h2>
+            <input
+              type="text"
+              className="font-bold w-300 px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
+              placeholder="Finance Bros"
+              maxLength={30}
+              // value={gameName}
+            />
 
-          <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
-            What are you betting on?
-          </h2>
-          <input
-            type="text"
-            className="font-bold px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
-            placeholder="How many times will Lucy ask a question in class"
-            maxLength={120}
-            // value={bet1}
-          />
+            <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
+              What are you betting on?
+            </h2>
+            <input
+              type="text"
+              className="font-bold px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
+              placeholder="How many times will Lucy ask a question in class"
+              maxLength={120}
+              // value={bet1}
+            />
 
-          {/*
+            {/*
             <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
               What else are you betting on?
             </h2>
@@ -95,27 +97,28 @@ function createPage() {
             />
             */}
 
-          <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
-            Add clarification for the bets?
-          </h2>
-          <input
-            type="text"
-            className="font-bold px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
-            placeholder="Optional"
-            maxLength={120}
-            // value={betDescription}
-          />
-        </div>
+            <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
+              Add clarification for the bets?
+            </h2>
+            <input
+              type="text"
+              className="font-bold px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
+              placeholder="Optional"
+              maxLength={120}
+              // value={betDescription}
+            />
+          </div>
 
-        <div className="flex justify-center items-center pt-7 pb-4">
-          <Link
-            href="/play-game"
-            className="dark:text-slate-100 dark:bg-sky-500 bg-sky-300 text-4xl font-bold font-impact border-2 
+          <div className="flex justify-center items-center pt-7 pb-4">
+            <Link
+              href="/play-game"
+              className="dark:text-slate-100 dark:bg-sky-500 bg-sky-300 text-4xl font-bold font-impact border-2 
             rounded-lg px-4 py-3 drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
-          >
-            <button>Create!</button>
-          </Link>
+            >
+              <button>Create!</button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
