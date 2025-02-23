@@ -56,30 +56,38 @@ export default function ProfilePage() {
         </nav>
       </header>
 
-      <div className="moving-background">
-        <div className="flex flex-row flex-wrap justify-center place-items-center">
-          <h2 className="font-Modak text-7xl mt-[80px] drop-shadow-md">
-            Welcome, &nbsp;
-          </h2>
-          <button className="hover:scale-105">
-            <Link href={"/profile"}>
-              <h2 className="font-Modak text-7xl flex-row mt-[80px] drop-shadow-md">
-                Username
-              </h2>
-            </Link>
-          </button>
+      <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
+        <div className="flex gap-4 justify-center items-center pt-7 pb-4">
+          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
+            Create your Profile!
+          </h1>
         </div>
-        <div className="h-auto w-[80%] mt-10 justify-evenly place-self-center flex flex-wrap">
-          <Link href={"/create"}>
-            <div className="h-96 w-96 min-w-48 min-h-12 flex flex-initial rounded-2xl bg-blue-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
-              <h2 className="text-7xl font-Modak text-gray-50">Create</h2>
-            </div>
-          </Link>
-          <Link href={"/join"}>
-            <div className="h-96 w-96 min-w-48 min-h-12 flex flex-initial rounded-2xl bg-red-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
-              <h2 className="text-7xl font-Modak text-gray-50">Join</h2>
-            </div>
-          </Link>
+
+        <div className="w-[40vw] h-[50vh] flex flex-col flex-wrap pt-6">
+          <div className="gap-1">
+            <h2 className="font-bold text-xl drop-shadow-lg">
+              Enter your Username
+            </h2>
+            <input
+              type="text"
+              className="font-bold p-1 bg-neutral-100 rounded border-2"
+              placeholder="imawesome123"
+              maxLength={30}
+              id="playerTag"
+              //onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+
+          <div className="flex justify-center items-center pt-32">
+            <Link
+              href="/play"
+              className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+            drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
+            ease-out shadow-lg"
+            >
+              <button>Save!</button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

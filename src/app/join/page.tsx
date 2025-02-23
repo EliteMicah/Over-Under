@@ -54,7 +54,7 @@ function joinPage() {
         </nav>
       </header>
 
-      <div className="bg-neutral-100 relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
+      <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-5xl font-bold dark:text-slate-100 drop-shadow-lg">
             Join a Game!
@@ -62,7 +62,7 @@ function joinPage() {
         </div>
 
         <div className="flex flex-col flex-wrap gap-1 w-[30vw] h-[18vh] mt-5">
-          <h2 className="font-bold text-xl mt-1 dark:text-slate-100 drop-shadow-lg">
+          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
             Enter the game's ID Code
           </h2>
           <input
