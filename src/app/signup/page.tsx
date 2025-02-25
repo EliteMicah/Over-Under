@@ -4,9 +4,7 @@ import Link from "next/link";
 import supabase from "@/config/supabaseClient";
 import "../../app/BackgroundAnimation.css";
 
-function createPage() {
-  const [hasValue, setHasValue] = useState(false);
-
+function SignUpPage() {
   return (
     <div className="h-screen w-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
@@ -61,63 +59,56 @@ function createPage() {
       <div className=" relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
-            Create your Ruleset!
+            Welcome
           </h1>
         </div>
 
         <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
-          <h2 className="font-bold text-xl drop-shadow-lg">Name your game!</h2>
+          <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
           <input
             type="text"
-            className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
-            placeholder="Finance Bros"
+            className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
+            placeholder="SuperCoolUsername123"
             maxLength={30}
             // value={betGameName}
           />
 
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            What will you be betting on?
-          </h2>
+          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Email</h2>
           <input
             type="text"
-            className="font-bold w-[50vw] px-1 py-1 bg-neutral-100 rounded border-2"
-            placeholder="How many times will Lucy ask a question in class"
+            className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
+            placeholder="example@email.com"
             maxLength={120}
             // value={betTitle}
           />
 
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            Set the line
-          </h2>
+          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
           <input
-            type="number"
-            className="font-bold w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
-            placeholder="20"
-            maxLength={6}
+            type="password"
+            className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded-lg border-2"
+            placeholder="•••••••••••••••••••••••"
             // value={betLine}
           />
 
           <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            Make the deadline
+            Confirm Password
           </h2>
           <input
-            type="datetime-local"
-            className={`font-bold w-[15vw] p-1 bg-neutral-100 rounded border-2 transition-colors ${
-              hasValue ? "text-black" : "text-gray-400"
-            }`}
-            onChange={(e) => setHasValue(!!e.target.value)}
+            type="password"
+            className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded-lg border-2"
+            placeholder="•••••••••••••••••••••••"
             // value={betDeadline}
           />
         </div>
 
         <div className="flex justify-center items-center pt-7">
           <Link
-            href="/play"
+            href="/home"
             className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
           >
-            <button>Create!</button>
+            <button>Sign Up!</button>
           </Link>
         </div>
       </div>
@@ -125,4 +116,4 @@ function createPage() {
   );
 }
 
-export default createPage;
+export default SignUpPage;
