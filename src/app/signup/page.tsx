@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "@/config/supabaseClient";
-import "../../app/BackgroundAnimation.css";
 
 function SignUpPage() {
   return (
@@ -58,7 +57,7 @@ function SignUpPage() {
 
       <div className=" relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
             Welcome
           </h1>
         </div>
@@ -85,7 +84,7 @@ function SignUpPage() {
           <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
           <input
             type="password"
-            className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded-lg border-2"
+            className="font-bold w-[20vw] p-1 bg-neutral-100 rounded-lg border-2"
             placeholder="•••••••••••••••••••••••"
             // value={betLine}
           />
@@ -109,6 +108,13 @@ function SignUpPage() {
             ease-out shadow-lg"
           >
             <button>Sign Up!</button>
+          </Link>
+        </div>
+
+        <div className="flex justify-center items-center pt-4">
+          <h3 className="text-sm">Already have an account? &nbsp;</h3>
+          <Link href="/signin" className="text-red-400">
+            <button>Sign in!</button>
           </Link>
         </div>
       </div>
