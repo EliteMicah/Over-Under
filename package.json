@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.48.1",
-    "next": "^15.2.0-canary.64",
+    "next": "^15.2.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-native-web": "^0.19.13",

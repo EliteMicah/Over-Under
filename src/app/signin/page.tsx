@@ -58,7 +58,7 @@ function SignInPage() {
 
       <div className=" relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
             Sign In
           </h1>
         </div>
@@ -89,7 +89,13 @@ function SignInPage() {
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
           >
-            <button>Sign Up!</button>
+            <button>Sign in!</button>
+          </Link>
+        </div>
+        <div className="flex justify-center items-center pt-4">
+          <h3 className="text-sm">Don't have an account? &nbsp;</h3>
+          <Link href="/signup" className="text-red-400">
+            <button>Sign up!</button>
           </Link>
         </div>
       </div>

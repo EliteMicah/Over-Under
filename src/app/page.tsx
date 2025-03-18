@@ -3,10 +3,8 @@
 
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import "../app/BackgroundAnimation.css";
 
 export default function landingPage() {
   /*
@@ -21,7 +19,7 @@ Logic to be applied here,
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/signUp");
+    router.push("/signup");
   }, [router]);
 
   return <div></div>;

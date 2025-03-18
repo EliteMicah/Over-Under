@@ -58,7 +58,7 @@ function joinPage() {
 
       <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-5xl font-bold dark:text-slate-100 drop-shadow-lg">
+          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
             Join a Game!
           </h1>
         </div>
@@ -69,7 +69,7 @@ function joinPage() {
           </h2>
           <input
             type="text"
-            className="font-bold w-300 px-1 py-1 dark:bg-transparent dark:text-slate-100 bg-neutral-100 rounded border-2"
+            className="font-bold w-300 p-1 bg-neutral-100 rounded border-2"
             placeholder="#jbwJeLhOPd"
             maxLength={11}
             // id="joinGameID"

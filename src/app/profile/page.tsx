@@ -66,9 +66,16 @@ export default function ProfilePage() {
         </div>
 
         <div className="w-[40vw] h-[50vh] flex flex-col flex-wrap pt-6">
+          <div className="gap-1 flex flex-row mb-4">
+            <h2 className="font-bold text-xl drop-shadow-lg">
+              Current Username:
+            </h2>
+            <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
+          </div>
+
           <div className="gap-1">
             <h2 className="font-bold text-xl drop-shadow-lg">
-              Enter your Username
+              Change Username?
             </h2>
             <input
               type="text"
@@ -76,7 +83,6 @@ export default function ProfilePage() {
               placeholder="imawesome123"
               maxLength={30}
               id="playerTag"
-              //onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
