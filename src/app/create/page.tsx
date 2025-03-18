@@ -66,7 +66,7 @@ function createPage() {
         </div>
 
         <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
-          <h2 className="font-bold text-xl drop-shadow-lg">Name your game!</h2>
+          <h2 className="font-bold text-xl drop-shadow-lg">Name your game:</h2>
           <input
             type="text"
             className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
@@ -87,7 +87,7 @@ function createPage() {
           />
 
           <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            Set the line
+            Set the line:
           </h2>
           <input
             type="number"
@@ -98,7 +98,7 @@ function createPage() {
           />
 
           <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            Make the deadline
+            Make the deadline:
           </h2>
           <input
             type="datetime-local"
