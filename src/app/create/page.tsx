@@ -61,7 +61,7 @@ function createPage() {
       <div className=" relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
-            Create your Ruleset!
+            Create your Ruleset:
           </h1>
         </div>
 
