@@ -105,7 +105,7 @@ function createPage() {
             className={`font-bold w-[15vw] p-1 bg-neutral-100 rounded border-2 transition-colors ${
               hasValue ? "text-black" : "text-gray-400"
             }`}
-            onChange={(e) => setHasValue(!!e.target.value)}
+            //onChange={(e) => setHasValue(!!e.target.value)}
             // value={betDeadline}
           />
         </div>

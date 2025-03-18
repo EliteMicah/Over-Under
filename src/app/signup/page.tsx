@@ -4,6 +4,42 @@ import Link from "next/link";
 import supabase from "@/config/supabaseClient";
 
 function SignUpPage() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
+
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          username: username,
+        },
+      },
+    });
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    if (data) {
+      setMessage("Account Created!");
+      return;
+    }
+  };
+
   return (
     <div className="h-screen w-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
@@ -62,6 +98,8 @@ function SignUpPage() {
           </h1>
         </div>
 
+        {message && <span>{message}</span>}
+
         <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
           <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
           <input
@@ -69,7 +107,9 @@ function SignUpPage() {
             className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
             placeholder="SuperCoolUsername123"
             maxLength={30}
-            // value={betGameName}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
 
           <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Email</h2>
@@ -78,7 +118,9 @@ function SignUpPage() {
             className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
             placeholder="example@email.com"
             maxLength={120}
-            // value={betTitle}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
 
           <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
@@ -86,7 +128,9 @@ function SignUpPage() {
             type="password"
             className="font-bold w-[20vw] p-1 bg-neutral-100 rounded-lg border-2"
             placeholder="•••••••••••••••••••••••"
-            // value={betLine}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
           <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
@@ -96,7 +140,9 @@ function SignUpPage() {
             type="password"
             className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded-lg border-2"
             placeholder="•••••••••••••••••••••••"
-            // value={betDeadline}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
           />
         </div>
 
