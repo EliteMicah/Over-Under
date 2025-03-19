@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "@/config/supabaseClient";
+import { useRouter } from "next/navigation";
 
 function SignUpPage() {
   const [username, setUsername] = useState("");
@@ -9,6 +10,7 @@ function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -19,24 +21,36 @@ function SignUpPage() {
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        data: {
-          username: username,
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            username: username,
+          },
         },
-      },
-    });
+      });
 
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
+      if (error) {
+        console.error("Supabase error:", error);
+        setMessage(`Error: ${error.message}`);
+        return;
+      }
 
-    if (data) {
-      setMessage("Account Created!");
-      return;
+      if (data) {
+        console.log("Signup successful:", data);
+        setMessage("Account Created!");
+        // Navigate to home once data has been received
+        router.push("/home");
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      setMessage(
+        `An error occurred: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`
+      );
     }
   };
 
@@ -44,10 +58,10 @@ function SignUpPage() {
     <div className="h-screen w-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
-          <Link href={"/home"}>
-            <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
-          </Link>
+          <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
         </nav>
+
+        {/* GitHub Nav Button */}
         <nav className="flex-row-reverse space-x-4 place-items-center">
           <button className="hover:scale-105">
             <Link
@@ -64,6 +78,8 @@ function SignUpPage() {
               </svg>
             </Link>
           </button>
+
+          {/* Info Nav Button */}
           <button className="hover:scale-105">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -75,18 +91,18 @@ function SignUpPage() {
               <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
             </svg>
           </button>
+
+          {/* Profile Nav Button */}
           <button className="hover:scale-105">
-            <Link href="/profile">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="40px"
-                viewBox="0 -960 960 960"
-                width="40px"
-                fill="#000000"
-              >
-                <path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z" />
-              </svg>
-            </Link>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="40px"
+              viewBox="0 -960 960 960"
+              width="40px"
+              fill="#000000"
+            >
+              <path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z" />
+            </svg>
           </button>
         </nav>
       </header>
@@ -99,68 +115,69 @@ function SignUpPage() {
         </div>
 
         {message && <span>{message}</span>}
+        <form onSubmit={handleSubmit}>
+          <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
+            <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
 
-        <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
-          <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
-          <input
-            type="text"
-            className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
-            placeholder="SuperCoolUsername123"
-            maxLength={30}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+            <input
+              type="text"
+              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
+              placeholder="SuperCoolUsername123"
+              maxLength={30}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
 
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Email</h2>
-          <input
-            type="text"
-            className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
-            placeholder="example@email.com"
-            maxLength={120}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Email</h2>
+            <input
+              type="text"
+              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
+              placeholder="example@email.com"
+              maxLength={120}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
-          <input
-            type="password"
-            className="font-bold w-[20vw] p-1 bg-neutral-100 rounded-lg border-2"
-            placeholder="•••••••••••••••••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
+            <input
+              type="password"
+              className="font-bold w-[20vw] p-1 bg-neutral-100 rounded-lg border-2"
+              placeholder="•••••••••••••••••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            Confirm Password
-          </h2>
-          <input
-            type="password"
-            className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded-lg border-2"
-            placeholder="•••••••••••••••••••••••"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
+              Confirm Password
+            </h2>
+            <input
+              type="password"
+              className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded-lg border-2"
+              placeholder="•••••••••••••••••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="flex justify-center items-center pt-7">
-          <Link
-            href="/home"
-            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+          <div className="flex justify-center items-center pt-7">
+            <div
+              className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
-          >
-            <button>Sign Up!</button>
-          </Link>
-        </div>
+            >
+              <button type="submit">Sign Up</button>
+            </div>
+          </div>
+        </form>
 
         <div className="flex justify-center items-center pt-4">
           <h3 className="text-sm">Already have an account? &nbsp;</h3>
           <Link href="/signin" className="text-red-400">
-            <button>Sign in!</button>
+            <button className="text-red-400">Sign in</button>
           </Link>
         </div>
       </div>
