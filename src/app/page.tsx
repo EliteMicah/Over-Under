@@ -19,7 +19,7 @@ Logic to be applied here,
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/signup");
+    router.push("/signin");
   }, [router]);
 
   return <div></div>;

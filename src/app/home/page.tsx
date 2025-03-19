@@ -60,7 +60,7 @@ export default function HomePage() {
         </nav>
       </header>
 
-      <div className="moving-background">
+      <div className="moving-background place-items-center">
         <div className="flex flex-row flex-wrap justify-center place-items-center">
           <h2 className="font-Modak text-7xl mt-[80px] drop-shadow-md">
             Welcome, &nbsp;
@@ -73,7 +73,7 @@ export default function HomePage() {
             </Link>
           </button>
         </div>
-        <div className="h-auto w-[80%] mt-10 justify-evenly place-self-center flex flex-wrap">
+        <div className="h-auto w-[80%] mt-10 justify-evenly flex flex-wrap">
           <Link href={"/create"}>
             <div className="h-96 w-96 min-w-48 min-h-12 flex flex-initial rounded-2xl bg-blue-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
               <h2 className="text-7xl font-Modak text-gray-50">Create</h2>
