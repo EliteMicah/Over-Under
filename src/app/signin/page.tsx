@@ -109,7 +109,7 @@ function SignInPage() {
         </nav>
       </header>
 
-      <div className=" relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
+      <div className=" relative pt-[50px] items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
             Sign In

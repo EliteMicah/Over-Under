@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "@/config/supabaseClient";
 import "../../app/BackgroundAnimation.css";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 function createPage() {
   const [hasValue, setHasValue] = useState(false);

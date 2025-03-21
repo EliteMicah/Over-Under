@@ -107,14 +107,13 @@ function SignUpPage() {
         </nav>
       </header>
 
-      <div className=" relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
+      <div className=" relative pt-[50px] items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
             Welcome
           </h1>
         </div>
 
-        {message && <span>{message}</span>}
         <form onSubmit={handleSubmit}>
           <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
             <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
@@ -163,6 +162,7 @@ function SignUpPage() {
             />
           </div>
 
+          {message && <span>{message}</span>}
           <div className="flex justify-center items-center pt-7">
             <div
               className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
