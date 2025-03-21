@@ -169,7 +169,7 @@ function SignUpPage() {
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
             >
-              <button type="submit">Sign Up</button>
+              <button type="submit">Register</button>
             </div>
           </div>
         </form>
