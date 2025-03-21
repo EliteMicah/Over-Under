@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AuthProvider } from "../context/AuthContext";
+import { PropsWithChildren } from "react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,17 +20,13 @@ export const metadata: Metadata = {
     "Created by Kierstin Havens, Sofia Spradley, Micah Woodring, and Wenbo Wang",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

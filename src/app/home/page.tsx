@@ -4,32 +4,27 @@ import Link from "next/link";
 import "../../app/BackgroundAnimation.css";
 import supabase from "@/config/supabaseClient";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
+  const { user, loading } = useAuth();
+
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
+    if (!loading && !user) {
+      router.replace("/signin");
+    }
+  }, [loading, user, router]);
 
-      if (!data.session) {
-        console.log("No session found in Home page");
-        router.replace("/signin");
-      } else {
-        console.log("Session found in Home page:", data.session);
-        setIsAuthenticated(true);
-        setIsLoading(false);
-      }
-    };
+  if (loading) return <div>Loading...</div>;
+  if (!user) return null;
 
-    checkAuth();
-  }, [router]);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (!isAuthenticated) return null;
+  // Get username from user metadata
+  const username = user?.user_metadata.username || "Username";
 
   return (
     <div className="h-screen w-screen bg-gray-200 flex-auto">
@@ -86,13 +81,13 @@ export default function HomePage() {
 
       <div className="moving-background place-items-center">
         <div className="flex flex-row flex-wrap justify-center place-items-center">
-          <h2 className="font-Modak text-7xl mt-[80px] drop-shadow-md">
+          <h2 className="font-Modak text-7xl pt-14 drop-shadow-md">
             Welcome, &nbsp;
           </h2>
           <button className="hover:scale-105">
             <Link href={"/profile"}>
-              <h2 className="font-Modak text-7xl flex-row mt-[80px] drop-shadow-md">
-                Username
+              <h2 className="font-Modak text-7xl flex-row pt-14 drop-shadow-md">
+                {username}
               </h2>
             </Link>
           </button>
