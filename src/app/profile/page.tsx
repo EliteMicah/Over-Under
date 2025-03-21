@@ -3,9 +3,18 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import "../../app/BackgroundAnimation.css";
+import { useRouter } from "next/navigation";
+import supabase from "@/config/supabaseClient";
 
 export default function ProfilePage() {
   const [username, setUsername] = useState("");
+  const router = useRouter();
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    router.push("/signin");
+  };
 
   return (
     <div className="h-screen w-screen bg-gray-200 flex-auto">
@@ -59,6 +68,14 @@ export default function ProfilePage() {
       </header>
 
       <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
+        <div className="flex w-full justify-end pr-14">
+          <button
+            onClick={signOut}
+            className="text-red-400 rounded-md p-2 bg-red-200 font-bold hover:scale-105"
+          >
+            Sign out?
+          </button>
+        </div>
         <div className="flex gap-4 justify-center items-center pt-7 pb-4">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
             Create your Profile!
@@ -93,7 +110,7 @@ export default function ProfilePage() {
             drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
             >
-              <button>Save!</button>
+              <button>Save</button>
             </Link>
           </div>
         </div>

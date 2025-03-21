@@ -1,10 +1,61 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import supabase from "@/config/supabaseClient";
 import "../../app/BackgroundAnimation.css";
 
 function SignInPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        console.error("Supabase error:", error);
+        setMessage(`Error: ${error.message}`);
+        return;
+      }
+
+      // Ensure session is fully established before redirecting
+      let sessionCheck = 0;
+      while (sessionCheck < 5) {
+        // Try up to 5 times
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData.session) {
+          console.log("Session confirmed:", sessionData.session);
+          setMessage("Logged in");
+          router.push("/home");
+          return;
+        }
+        console.log("Waiting for session to establish...");
+        await new Promise((r) => setTimeout(r, 300)); // Wait 300ms between checks
+        sessionCheck++;
+      }
+
+      setMessage(
+        "Login successful but session not established. Please try again."
+      );
+    } catch (err) {
+      console.error("Login error:", err);
+      setMessage(
+        `An error occurred: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`
+      );
+    }
+  };
+
   return (
     <div className="h-screen w-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
@@ -65,41 +116,46 @@ function SignInPage() {
           </h1>
         </div>
 
-        <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
-          <h2 className="font-bold text-xl drop-shadow-lg">Email</h2>
-          <input
-            type="text"
-            className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
-            placeholder="example@email.com"
-            maxLength={100}
-            // value={betGameName}
-          />
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
-          <input
-            type="password"
-            className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded border-2"
-            placeholder="•••••••••••••••••••••••"
-            //placeholder="•••••••••"
-            // value={betLine}
-          />
-        </div>
+        {message && <span>{message}</span>}
+        <form onSubmit={handleSubmit}>
+          <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
+            <h2 className="font-bold text-xl drop-shadow-lg">Email</h2>
+            <input
+              type="text"
+              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
+              placeholder="example@email.com"
+              maxLength={100}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
+            <input
+              type="password"
+              className="font-bold w-[20vw] p-1 bg-neutral-100 rounded border-2"
+              placeholder="•••••••••••••••••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="flex justify-center items-center pt-7">
-          <Link
-            href="/home"
-            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+          <div className="flex justify-center items-center pt-7">
+            <div
+              className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
-          >
-            <button>Sign in</button>
-          </Link>
-        </div>
-        <div className="flex justify-center items-center pt-4">
-          <h3 className="text-sm">Don't have an account? &nbsp;</h3>
-          <Link href="/signup" className="text-red-400">
-            <button>Sign up</button>
-          </Link>
-        </div>
+            >
+              <button type="submit">Sign in</button>
+            </div>
+          </div>
+          <div className="flex justify-center items-center pt-4">
+            <h3 className="text-sm">Don't have an account? &nbsp;</h3>
+            <Link href="/signup" className="text-red-400">
+              <button>Sign up</button>
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );
