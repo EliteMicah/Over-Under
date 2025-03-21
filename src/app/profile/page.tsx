@@ -4,11 +4,15 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import "../../app/BackgroundAnimation.css";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
 import supabase from "@/config/supabaseClient";
 
 export default function ProfilePage() {
-  const [username, setUsername] = useState("");
   const router = useRouter();
+
+  const { user } = useAuth();
+
+  const username = user?.user_metadata.username || "Username";
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -67,7 +71,7 @@ export default function ProfilePage() {
         </nav>
       </header>
 
-      <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
+      <div className="relative pt-14 w-lvw h-lvh items-center flex flex-row flex-wrap">
         <div className="flex w-full justify-end pr-14">
           <button
             onClick={signOut}
@@ -82,36 +86,38 @@ export default function ProfilePage() {
           </h1>
         </div>
 
-        <div className="w-[40vw] h-[50vh] flex flex-col flex-wrap pt-6">
-          <div className="gap-1 flex flex-row mb-4">
-            <h2 className="font-bold text-xl drop-shadow-lg">
-              Current Username:
-            </h2>
-            <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
-          </div>
+        <div className="flex flex-col">
+          <div className="w-[40vw] h-[50vh] flex flex-col flex-wrap pt-6">
+            <div className="gap-1 flex flex-row mb-4">
+              <h2 className="font-bold text-xl drop-shadow-lg">
+                Current Username:
+              </h2>
+              <h2 className="font-bold text-xl drop-shadow-lg">{username}</h2>
+            </div>
 
-          <div className="gap-1">
-            <h2 className="font-bold text-xl drop-shadow-lg">
-              Change Username?
-            </h2>
-            <input
-              type="text"
-              className="font-bold p-1 bg-neutral-100 rounded border-2"
-              placeholder="imawesome123"
-              maxLength={30}
-              id="playerTag"
-            />
-          </div>
+            <div className="gap-1">
+              <h2 className="font-bold text-xl drop-shadow-lg">
+                Change Username?
+              </h2>
+              <input
+                type="text"
+                className="font-bold p-1 bg-neutral-100 rounded border-2"
+                placeholder="imawesome123"
+                maxLength={30}
+                id="playerTag"
+              />
+            </div>
 
-          <div className="flex justify-center items-center pt-32">
-            <Link
-              href="/play"
-              className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+            <div className="flex justify-center items-center pt-32">
+              <Link
+                href="/play"
+                className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
             drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
-            >
-              <button>Save</button>
-            </Link>
+              >
+                <button>Save</button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
