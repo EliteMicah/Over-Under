@@ -60,11 +60,11 @@ function infoPage() {
       <div className="flex flex-col flex-wrap justify-center place-items-center">
         <div className="flex gap-4 justify-center items-center py-4">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
-            How to Play
+            How to Play:
           </h1>
         </div>
         <div className="w-[65%] border-2 border-black">
-          <h1>Test</h1>
+          <h1>Objective:</h1>
         </div>
         <div className="h-1 pt-4 border-red-500"></div>
       </div>
