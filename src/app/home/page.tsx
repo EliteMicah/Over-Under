@@ -51,7 +51,7 @@ export default function HomePage() {
             </Link>
           </button>
           <button className="hover:scale-105">
-            <Link href={"/infoPage"}>
+            <Link href={"/info"}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="40px"
@@ -81,26 +81,30 @@ export default function HomePage() {
 
       <div className="moving-background place-items-center">
         <div className="flex flex-row flex-wrap justify-center place-items-center">
-          <h2 className="font-Modak text-7xl pt-14 drop-shadow-md">
+          <h2 className="font-Modak text-4xl md:text-5xl lg:text-7xl pt-14 drop-shadow-md">
             Welcome, &nbsp;
           </h2>
           <button className="hover:scale-105">
             <Link href={"/profile"}>
-              <h2 className="font-Modak text-7xl flex-row pt-14 drop-shadow-md">
+              <h2 className="font-Modak text-4xl md:text-5xl lg:text-7xl flex-row pt-14 drop-shadow-md">
                 {username}
               </h2>
             </Link>
           </button>
         </div>
-        <div className="h-auto w-[80%] mt-10 justify-evenly flex flex-wrap">
+        <div className="h-auto w-[80%] mt-10 justify-evenly flex flex-wrap gap-4">
           <Link href={"/create"}>
-            <div className="h-96 w-96 min-w-48 min-h-12 flex flex-initial rounded-2xl bg-blue-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
-              <h2 className="text-7xl font-Modak text-gray-50">Create</h2>
+            <div className="h-48 w-48 md:w-72 md:h-72 lg:w-96 lg:h-96 flex flex-initial rounded-2xl bg-blue-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
+              <h2 className="text-3xl md:text-5xl lg:text-7xl font-Modak text-gray-50">
+                Create
+              </h2>
             </div>
           </Link>
           <Link href={"/join"}>
-            <div className="h-96 w-96 min-w-48 min-h-12 flex flex-initial rounded-2xl bg-red-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
-              <h2 className="text-7xl font-Modak text-gray-50">Join</h2>
+            <div className="h-48 w-48 md:w-72 md:h-72 lg:w-96 lg:h-96 flex flex-initial rounded-2xl bg-red-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
+              <h2 className="text-3xl md:text-5xl lg:text-7xl font-Modak text-gray-50">
+                Join
+              </h2>
             </div>
           </Link>
         </div>

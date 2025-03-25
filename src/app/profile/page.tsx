@@ -76,7 +76,7 @@ export default function ProfilePage() {
           {/* 3 part grid where this empty div is the 1st section */}
           <div></div>
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg text-center">
-            Create your Profile!
+            Edit Profile!
           </h1>
           <div className="flex justify-end">
             <button
