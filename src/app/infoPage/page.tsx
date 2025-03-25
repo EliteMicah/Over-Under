@@ -6,7 +6,7 @@ import "../../app/BackgroundAnimation.css";
 
 function infoPage() {
   return (
-    <div className="h-screen w-screen flex-auto bg-gray-200">
+    <div className="min-h-screen w-screen bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
@@ -57,8 +57,63 @@ function infoPage() {
           </button>
         </nav>
       </header>
+      <div className="flex flex-col flex-wrap justify-center place-items-center">
+        <h1 className="font-Modak text-7xl mt-[80px] drop-shadow-md">
+          How to Play:
+        </h1>
+      <div>
+        <ol className="font-Modak flex flex-col gap-4 text-xl">
+          <li className="font-Modak flex flex-col gap-2">
+            <strong>Objective:</strong> Players bet on whether a specific event's outcome will be over or under a predefined number or threshold.
+          </li>
+          <li className="font-Modak flex flex-col gap-2">
+            <strong>Choosing the Event:</strong>
+            <ul className="font-Modak list-disc list-inside ml-6 space-y-1">
+                <li>The event could be anything with a measurable outcome. For example:</li>
+                <ul className="list-disc list-inside ml-6 space-y-1">
+                <li>Total points in a basketball game.</li>
+                <li>Total goals in a soccer match.</li>
+                <li> Total runs in a baseball game.</li>
+                <li>A stock market index value by the end of the day.</li>
+                </ul>
+                <li>
+                  The number chosen is called the "line" (e.g., 50 total points, 3 goals, etc.).
+                </li>
+            </ul>
+          </li>
+           <li className="flex flex-col gap-2">
+            <strong>Setting the Line:</strong>
+            <ul className="list-disc list-inside ml-6 space-y-1">
+                <li>A third party (organizer / game leader) sets a line based on statistical analysis or prediction.</li>
+                <ul className="list-disc list-inside ml-6 space-y-1">
+                  <li> Example: For a basketball game, the line may be set at 200 total points.</li>
+                </ul>
+                <li>This line is the threshold players bet on: whether the final result will be over or under this number.</li>
+            </ul>
+          </li>
+          <li className="flex flex-col gap-2">
+            <strong>Making a Bet:</strong>
+            <ul className="list-disc list-inside ml-6 space-y-1">
+                <li>Over Bet: A player wagers that the actual outcome will be higher than the line.</li>
+                <li>Under Bet: A player wagers that the actual outcome will be lower than the line.</li>
+                <li>Exact Bet: A player that wagers the actual outcome will be exactly the line.</li>
+            </ul>
+         </li>  
+         <li className="flex flex-col gap-2">
+            <strong>Bet Settlement:</strong>
+            <ul className="list-disc list-inside ml-6 space-y-1">
+                <li>Once the event has concluded, the actual result is compared to the line:</li>
+                <ul className="list-disc list-inside ml-6 space-y-1"> 
+                  <li> If the final result is greater than the line, those who bet over win.</li>
+                  <li> If the final result is less than the line, those who bet under win.</li>
+                  <li> If the final result is equal to the line, those who bet the line win x2.</li>
+                </ul>
+            </ul>
+         </li>
+        </ol>
+      </div>
     </div>
+  </div>
   );
 }
-
 export default infoPage;
