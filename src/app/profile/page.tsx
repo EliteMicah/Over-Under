@@ -9,6 +9,8 @@ import supabase from "@/config/supabaseClient";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const [message, setMessage] = useState("");
+  const [newUsername, setNewUsername] = useState("");
 
   const { user } = useAuth();
 
@@ -18,6 +20,47 @@ export default function ProfilePage() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     router.push("/signin");
+  };
+
+  const changeUsername = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
+
+    try {
+      // Update the profiles table
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ username: newUsername })
+        .eq("id", user?.id);
+
+      if (profileError) {
+        console.error("Supabase error:", profileError);
+        setMessage(`Error: ${profileError.message}`);
+        return;
+      }
+
+      // Update user metadata
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { username: newUsername },
+      });
+
+      if (updateError) {
+        console.error("Update error:", updateError);
+        setMessage(`Error: ${updateError.message}`);
+        return;
+      }
+
+      console.log("Username Change Successful");
+      setMessage("Username Change Successful!");
+      router.push("/home");
+    } catch (err) {
+      console.error("Change error:", err);
+      setMessage(
+        `An error occurred: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`
+      );
+    }
   };
 
   return (
@@ -81,7 +124,7 @@ export default function ProfilePage() {
           <div className="flex justify-end">
             <button
               onClick={signOut}
-              className="text-red-400 rounded-md p-2 bg-red-200 font-bold hover:scale-105"
+              className="text-red-600 rounded-md p-2 bg-red-200 font-bold hover:scale-105"
             >
               Sign out?
             </button>
@@ -97,29 +140,32 @@ export default function ProfilePage() {
               <h2 className="font-bold text-xl drop-shadow-lg">{username}</h2>
             </div>
 
-            <div className="gap-1">
-              <h2 className="font-bold text-xl drop-shadow-lg">
-                Change Username?
-              </h2>
-              <input
-                type="text"
-                className="font-bold p-1 bg-neutral-100 rounded border-2"
-                placeholder="imawesome123"
-                maxLength={30}
-                id="playerTag"
-              />
-            </div>
+            <form onSubmit={changeUsername}>
+              <div className="gap-1">
+                <h2 className="font-bold text-xl drop-shadow-lg">
+                  Change Username?
+                </h2>
+                <input
+                  type="text"
+                  className="font-bold p-1 bg-neutral-100 rounded border-2"
+                  placeholder="imawesome123"
+                  maxLength={30}
+                  id="playerTag"
+                  value={newUsername}
+                  onChange={(e) => setNewUsername(e.target.value)}
+                />
+              </div>
 
-            <div className="flex justify-center items-center pt-32">
-              <Link
-                href="/play"
-                className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
-            drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
-            ease-out shadow-lg"
-              >
-                <button>Save</button>
-              </Link>
-            </div>
+              <div className="flex justify-center items-center pt-32">
+                <div
+                  className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+                  drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
+                  ease-out shadow-lg"
+                >
+                  <button type="submit">Save</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
