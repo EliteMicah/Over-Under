@@ -71,19 +71,21 @@ export default function ProfilePage() {
         </nav>
       </header>
 
-      <div className="relative pt-14 w-lvw h-lvh items-center flex flex-row flex-wrap">
-        <div className="flex w-full justify-end pr-14">
-          <button
-            onClick={signOut}
-            className="text-red-400 rounded-md p-2 bg-red-200 font-bold hover:scale-105"
-          >
-            Sign out?
-          </button>
-        </div>
-        <div className="flex gap-4 justify-center items-center pt-7 pb-4">
-          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
+      <div className="relative pt-14 w-lvw h-lvh items-center flex flex-col flex-wrap">
+        <div className="grid grid-cols-3 w-full items-center px-14 py-7">
+          {/* 3 part grid where this empty div is the 1st section */}
+          <div></div>
+          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg text-center">
             Create your Profile!
           </h1>
+          <div className="flex justify-end">
+            <button
+              onClick={signOut}
+              className="text-red-400 rounded-md p-2 bg-red-200 font-bold hover:scale-105"
+            >
+              Sign out?
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col">
