@@ -1,11 +1,85 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import supabase from "@/config/supabaseClient";
 import "../../app/BackgroundAnimation.css";
 
 function createPage() {
+  const router = useRouter();
   const [hasValue, setHasValue] = useState(false);
+  const [message, setMessage] = useState("");
+  const [gameName, setGameName] = useState("");
+  const [betDescription, setBetDescription] = useState("");
+  const [line, setLine] = useState("");
+  const [deadline, setDeadline] = useState("");
+
+  const generateGameId = (): string => {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const idLength = 8;
+    const generateRandomString = () => {
+      return Array.from({ length: idLength }, () =>
+        characters.charAt(Math.floor(Math.random() * characters.length))
+      ).join("");
+    };
+
+    // In a scalable real-world scenario, we'd want to check for uniqueness against our existing game IDs
+    // This is a simplified version that just generates a random string
+    return generateRandomString();
+  };
+
+  const createGame = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
+
+    if (!gameName || !betDescription || !line || !deadline) {
+      setMessage("Please fill out all fields");
+      return;
+    }
+
+    try {
+      // Convert datetime-local input to a proper timestamp
+      // The datetime-local input is in local time, so we'll convert it to UTC
+      const deadlineDate = new Date(deadline);
+      const utcDeadline = deadlineDate.toISOString();
+
+      const { data, error } = await supabase
+        .from("games")
+        .insert([
+          {
+            gameid: generateGameId(),
+            game_name: gameName,
+            bet_description: betDescription,
+            line: Number(line),
+            deadline: utcDeadline,
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error(
+          "Detailed Supabase Error:",
+          JSON.stringify(error, null, 2)
+        );
+        setMessage(`Supabase Error: ${error.message || "Unknown error"}`);
+        return;
+      }
+
+      if (data) {
+        console.log("Game creation Successful", data);
+        setMessage("Game creation Successful!");
+        router.push("/play");
+      }
+    } catch (err) {
+      console.error("Game creation error:", err);
+      setMessage(
+        `An error occurred: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`
+      );
+    }
+  };
 
   return (
     <div className="h-screen w-screen flex-auto bg-gray-200">
@@ -33,15 +107,15 @@ function createPage() {
           </button>
           <button className="hover:scale-105">
             <Link href="/info">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="40px"
-              viewBox="0 -960 960 960"
-              width="40px"
-              fill="#000000"
-            >
-              <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="40px"
+                viewBox="0 -960 960 960"
+                width="40px"
+                fill="#000000"
+              >
+                <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+              </svg>
             </Link>
           </button>
           <button className="hover:scale-105">
@@ -60,68 +134,78 @@ function createPage() {
         </nav>
       </header>
 
-      <div className=" relative pt-14 w-lvw h-lvh items-center flex flex-col flex-wrap">
+      <div className="relative pt-14 w-lvw items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
             Create your Ruleset:
           </h1>
         </div>
 
-        <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
-          <h2 className="font-bold text-xl drop-shadow-lg">Name your game:</h2>
-          <input
-            type="text"
-            className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
-            placeholder="Finance Bros"
-            maxLength={30}
-            // value={betGameName}
-          />
+        <form onSubmit={createGame}>
+          <div className="w-[50vw] gap-y-2 flex flex-col">
+            <h2 className="font-bold text-xl drop-shadow-lg">
+              Name your game:
+            </h2>
+            <input
+              type="text"
+              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
+              placeholder="Finance Bros"
+              maxLength={30}
+              value={gameName}
+              onChange={(e) => setGameName(e.target.value)}
+              required
+            />
 
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            What will you be betting on?
-          </h2>
-          <input
-            type="text"
-            className="font-bold w-[50vw] px-1 py-1 bg-neutral-100 rounded border-2"
-            placeholder="How many times will Lucy ask a question in class"
-            maxLength={120}
-            // value={betTitle}
-          />
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
+              What will you be betting on?
+            </h2>
+            <input
+              type="text"
+              className="font-bold w-[50vw] px-1 py-1 bg-neutral-100 rounded border-2"
+              placeholder="How many times will Lucy ask a question in class"
+              maxLength={120}
+              value={betDescription}
+              onChange={(e) => setBetDescription(e.target.value)}
+              required
+            />
 
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            Set the line:
-          </h2>
-          <input
-            type="number"
-            className="font-bold w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
-            placeholder="20"
-            maxLength={6}
-            // value={betLine}
-          />
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
+              Set the line:
+            </h2>
+            <input
+              type="number"
+              className="font-bold w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
+              placeholder="20"
+              maxLength={6}
+              value={line}
+              onChange={(e) => setLine(e.target.value)}
+              required
+            />
 
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            Make the deadline:
-          </h2>
-          <input
-            type="datetime-local"
-            className={`font-bold w-[15vw] p-1 bg-neutral-100 rounded border-2 transition-colors ${
-              hasValue ? "text-black" : "text-gray-400"
-            }`}
-            //onChange={(e) => setHasValue(!!e.target.value)}
-            // value={betDeadline}
-          />
-        </div>
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
+              Make the deadline:
+            </h2>
+            <input
+              type="datetime-local"
+              className={`font-bold w-[15vw] p-1 bg-neutral-100 rounded border-2 transition-colors ${
+                hasValue ? "text-black" : "text-gray-400"
+              }`}
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="flex justify-center items-center pt-7">
-          <Link
-            href="/play"
-            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+          <div className="flex justify-center items-center pt-10">
+            <div
+              className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
-          >
-            <button>Create!</button>
-          </Link>
-        </div>
+            >
+              <button type="submit">Create!</button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );
