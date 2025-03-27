@@ -65,13 +65,13 @@ function playPage() {
           </h1>
         </div>
       <div className="w-[50vw] h-[40vh] gap-y-16 flex flex-col">
-          <h2 className="font-bold text-3xl drop-shadow-lg">Your game:</h2>
+          <h2 className="font-bold text-3xl drop-shadow-lg">The Bet:</h2>
           <h2 className="font-bold text-3xl drop-shadow-lg">
-            The Line:
+            Game Leader set the line to:
           </h2>
           <div className="flex items-center gap-4">
             <h2 className="font-bold text-3xl drop-shadow-lg">
-              My Bet:
+              Place Bet:
             </h2>
             <input
               type="number"
