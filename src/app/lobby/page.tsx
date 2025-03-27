@@ -4,7 +4,7 @@ import Link from "next/link";
 import supabase from "@/config/supabaseClient";
 import "../../app/BackgroundAnimation.css";
 
-function playPage() {
+function lobbyPage() {
   return (
     <div className="h-screen w-screen bg-gray-200 flex-auto">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
@@ -57,21 +57,20 @@ function playPage() {
           </button>
         </nav>
       </header>
-
       <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-16">
           <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
-            Make Your Bet:
+            Bet Group Name:
           </h1>
         </div>
       <div className="w-[50vw] h-[40vh] gap-y-16 flex flex-col">
           <h2 className="font-bold text-3xl drop-shadow-lg">The Bet:</h2>
           <h2 className="font-bold text-3xl drop-shadow-lg">
-            Game Leader set the line to:
+            Participants:
           </h2>
           <div className="flex items-center gap-4">
             <h2 className="font-bold text-3xl drop-shadow-lg">
-              Place Bet:
+              Time Remaining:
             </h2>
             <input
               type="number"
@@ -82,19 +81,9 @@ function playPage() {
             />
           </div>
         </div>
-        <div className="flex justify-center items-center pt-7">
-          <Link
-            href={"/lobby"}
-            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
-            drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
-            ease-out shadow-lg"
-          >
-            <button>Place Bet!</button>
-          </Link>
-        </div>
       </div>
-    </div>
+    </div>    
   );
 }
 
-export default playPage;
+export default lobbyPage;
