@@ -58,11 +58,39 @@ function playPage() {
         </nav>
       </header>
 
-      <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col flex-wrap">
-        <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
-            Game Name:
+      <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
+        <div className="flex gap-12 justify-center items-center pb-16">
+          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
+            Make Your Bet:
           </h1>
+        </div>
+      <div className="w-[50vw] h-[40vh] gap-y-16 flex flex-col">
+          <h2 className="font-bold text-3xl drop-shadow-lg">Your game:</h2>
+          <h2 className="font-bold text-3xl drop-shadow-lg">
+            The Line:
+          </h2>
+          <div className="flex items-center gap-4">
+            <h2 className="font-bold text-3xl drop-shadow-lg">
+              My Bet:
+            </h2>
+            <input
+              type="number"
+              className="font-bold w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
+              placeholder="20"
+              maxLength={6}
+              //value={userBet}
+            />
+          </div>
+        </div>
+        <div className="flex justify-center items-center pt-7">
+          <Link
+            href="/play"
+            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+            drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
+            ease-out shadow-lg"
+          >
+            <button>Bet!</button>
+          </Link>
         </div>
       </div>
     </div>
