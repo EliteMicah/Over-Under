@@ -6,7 +6,7 @@ import "../../app/BackgroundAnimation.css";
 
 function playPage() {
   return (
-    <div className="h-screen w-screen bg-gray-200 flex-auto">
+    <div className="min-h-screen w-screen bg-gray-200 flex-auto">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
@@ -57,7 +57,13 @@ function playPage() {
           </button>
         </nav>
       </header>
-
+      <div className="flex justify-end mt-4 mr-8">
+        <div>
+              <h2 className="text-black-400 rounded-md p-2 font-bold hover:scale-105 text-xl">
+              Game ID
+              </h2>
+        </div>
+      </div>
       <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-16">
           <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
