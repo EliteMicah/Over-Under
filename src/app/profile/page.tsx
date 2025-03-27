@@ -64,7 +64,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="h-screen w-screen bg-gray-200 flex-auto">
+    <div className="h-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
@@ -115,31 +115,30 @@ export default function ProfilePage() {
           </button>
         </nav>
       </header>
+
       <div className="flex justify-end mt-4 mr-8">
-        <div>
+        <div className="pt-4">
           <button
             onClick={signOut}
-            className="text-red-600 rounded-md p-2 bg-red-200 font-bold hover:scale-105"
+            className="text-black rounded-md p-2 bg-red-400 font-bold hover:scale-105"
           >
             Sign out?
           </button>
         </div>
       </div>
-      <div className="relative pt-4 w-lvw h-lvh items-center flex flex-col flex-wrap">
-        <div className="grid grid-cols-3 w-full items-center px-14">
-          {/* 3 part grid where this empty div is the 1st section */}
-          <div></div>
+
+      <div className="relative pt-4 w-lvw items-center flex flex-col flex-wrap">
+        <div className="flex justify-center w-full">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg text-center">
-            Edit Profile:
+            Edit Profile
           </h1>
         </div>
         <div className="flex flex-col">
           <div className="w-[40vw] h-[50vh] flex flex-col flex-wrap pt-6">
             <div className="gap-1 flex flex-row mb-4">
               <h2 className="font-bold text-xl drop-shadow-lg">
-                Current Username:
+                Current Username: {username}
               </h2>
-              <h2 className="font-bold text-xl drop-shadow-lg">{username}</h2>
             </div>
 
             <form onSubmit={changeUsername}>
