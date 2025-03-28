@@ -2,9 +2,18 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "@/config/supabaseClient";
+import { useRouter } from "next/navigation";
 import "../../app/BackgroundAnimation.css";
 
 function joinPage() {
+  const router = useRouter();
+  const [message, setMessage] = useState("");
+
+  const findGame = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
+  };
+
   return (
     <div className="h-screen w-screen bg-gray-200 flex-auto">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
@@ -31,15 +40,15 @@ function joinPage() {
           </button>
           <button className="hover:scale-105">
             <Link href="/info">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="40px"
-              viewBox="0 -960 960 960"
-              width="40px"
-              fill="#000000"
-            >
-              <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="40px"
+                viewBox="0 -960 960 960"
+                width="40px"
+                fill="#000000"
+              >
+                <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+              </svg>
             </Link>
           </button>
           <button className="hover:scale-105">
@@ -58,36 +67,37 @@ function joinPage() {
         </nav>
       </header>
 
-      <div className="relative pt-14 w-lvw h-lvh items-center flex flex-col flex-wrap">
+      <div className="relative pt-14 w-lvw items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
             Join a Game!
           </h1>
         </div>
 
-        <div className="flex flex-col flex-wrap gap-1 w-[30vw] h-[18vh] mt-5">
-          <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-            Enter the game's ID Code
-          </h2>
-          <input
-            type="text"
-            className="font-bold w-300 p-1 bg-neutral-100 rounded border-2"
-            placeholder="#jbwJeLhOPd"
-            maxLength={11}
-            // id="joinGameID"
-          />
-        </div>
+        <form onSubmit={findGame}>
+          <div className="flex flex-col flex-wrap gap-1 w-[30vw] h-[18vh] mt-5">
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
+              Enter the game's ID Code
+            </h2>
+            <input
+              type="text"
+              className="font-bold w-300 p-1 bg-neutral-100 rounded border-2"
+              placeholder="#jbwJeLhOPd"
+              maxLength={11}
+            />
+          </div>
 
-        <div className="flex justify-center items-center">
-          <Link
-            href="/"
-            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+          <div className="flex justify-center items-center mt-10">
+            <button
+              className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
-          >
-            <h2>Join!</h2>
-          </Link>
-        </div>
+              type="submit"
+            >
+              Join
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
