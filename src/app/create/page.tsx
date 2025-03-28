@@ -82,7 +82,7 @@ function createPage() {
   };
 
   return (
-    <div className="h-screen w-screen flex-auto bg-gray-200">
+    <div className="h-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
