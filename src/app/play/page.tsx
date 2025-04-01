@@ -64,20 +64,22 @@ function playPage() {
               </h2>
         </div>
       </div>
-      <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
+      <div className="relative pt-[10px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-16">
           <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
-            Make Your Bet:
+            Bet group name here
           </h1>
         </div>
-      <div className="w-[50vw] h-[40vh] gap-y-16 flex flex-col">
-          <h2 className="font-bold text-3xl drop-shadow-lg">The Bet:</h2>
+        <div className="flex gap-16 justify-center items-center pb-16">
+          <h2 className="font-bold text-3xl drop-shadow-lg">Bet description here:</h2>
+        </div>
+      <div className="w-[50vw] h-[20vh] gap-y-4 flex flex-col">
           <h2 className="font-bold text-3xl drop-shadow-lg">
             Game Leader set the line to:
           </h2>
           <div className="flex items-center gap-4">
             <h2 className="font-bold text-3xl drop-shadow-lg">
-              Place Bet:
+              My Bet:
             </h2>
             <input
               type="number"
@@ -88,7 +90,7 @@ function playPage() {
             />
           </div>
         </div>
-        <div className="flex justify-center items-center pt-7">
+        <div className="flex justify-center items-center mt-2">
           <Link
             href={"/lobby"}
             className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
