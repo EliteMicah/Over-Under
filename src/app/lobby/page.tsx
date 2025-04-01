@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "@/config/supabaseClient";
 import "../../app/BackgroundAnimation.css";
+import { Check } from "lucide-react"; // Icon Library
+import { Card, CardContent } from "@/components/ui/card"; // Shadcn UI Components
+
 
 function lobbyPage() {
   return (
@@ -57,30 +60,41 @@ function lobbyPage() {
           </button>
         </nav>
       </header>
+      <div className="flex justify-between mt-4 mx-8">
+        <div>
+              <h2 className="text-black-400 rounded-md p-2 font-bold hover:scale-105 text-xl">
+              Time Remaining:
+              </h2>
+        </div>
+        <div>
+              <h2 className="text-black-400 rounded-md p-2 font-bold hover:scale-105 text-xl">
+              Game ID 
+              </h2>
+        </div>
+      </div>
       <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
-        <div className="flex gap-12 justify-center items-center pb-16">
+        <div className="flex gap-8 justify-center items-center pb-16">
           <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
-            Bet Group Name:
+            Bet Group Name Here
           </h1>
         </div>
-      <div className="w-[50vw] h-[40vh] gap-y-16 flex flex-col">
-          <h2 className="font-bold text-3xl drop-shadow-lg">The Bet:</h2>
-          <h2 className="font-bold text-3xl drop-shadow-lg">
-            Participants:
-          </h2>
-          <div className="flex items-center gap-4">
-            <h2 className="font-bold text-3xl drop-shadow-lg">
-              Time Remaining:
-            </h2>
-            <input
-              type="number"
-              className="font-bold w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
-              placeholder="20"
-              maxLength={6}
-              //value={userBet}
-            />
-          </div>
+        <div>
+          <h2 className="font-bold text-3xl drop-shadow-lg">Bet description here</h2>
         </div>
+
+        <Card className="mt-8 p-4 flex flex-col items-center w-40 border-0 shadow-none">
+      {/* Circular Badge with Checkmark */}
+      <div className="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center">
+        <Check className="text-black w-8 h-8" />
+      </div>
+      {/* Crown and Username */}
+      <div className="relative mt-2 text-center">
+        <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
+          👑 {/* Crown Emoji (Replace with an icon if needed) */}
+        </div>
+        <p className="font-bold text-black">UsernameHere</p>
+      </div>
+    </Card>
       </div>
     </div>    
   );
