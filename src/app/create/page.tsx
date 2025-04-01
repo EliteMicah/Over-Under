@@ -33,6 +33,16 @@ function createPage() {
     event.preventDefault();
     setMessage("");
 
+    // Get the current authenticated user
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setMessage("You must be logged in to create a game");
+      return;
+    }
+
     if (!gameName || !betDescription || !line || !deadline) {
       setMessage("Please fill out all fields");
       return;
@@ -53,6 +63,7 @@ function createPage() {
             bet_description: betDescription,
             line: Number(line),
             deadline: utcDeadline,
+            creator_id: user.id,
           },
         ])
         .select();
@@ -150,7 +161,7 @@ function createPage() {
               type="text"
               className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
               placeholder="Finance Bros"
-              maxLength={30}
+              maxLength={85}
               value={gameName}
               onChange={(e) => setGameName(e.target.value)}
               required
