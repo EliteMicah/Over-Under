@@ -8,7 +8,7 @@ function createPage() {
   const [hasValue, setHasValue] = useState(false);
 
   return (
-    <div className="h-screen w-screen flex-auto bg-gray-200">
+    <div className="min-h-screen w-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
@@ -112,7 +112,7 @@ function createPage() {
           />
         </div>
 
-        <div className="flex justify-center items-center pt-7">
+        <div className="mt-8 flex justify-center items-center pt-7">
           <Link
             href="/play"
             className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6

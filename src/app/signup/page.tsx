@@ -55,7 +55,7 @@ function SignUpPage() {
   };
 
   return (
-    <div className="h-screen w-screen flex-auto bg-gray-200">
+    <div className="min-h-screen w-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>

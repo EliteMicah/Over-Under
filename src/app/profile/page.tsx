@@ -21,7 +21,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="h-screen w-screen bg-gray-200 flex-auto">
+    <div className="min-h-screen w-screen bg-gray-200 flex-auto">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
