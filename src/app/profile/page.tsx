@@ -9,6 +9,8 @@ import supabase from "@/config/supabaseClient";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const [message, setMessage] = useState("");
+  const [newUsername, setNewUsername] = useState("");
 
   const { user } = useAuth();
 
@@ -18,6 +20,47 @@ export default function ProfilePage() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     router.push("/signin");
+  };
+
+  const changeUsername = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
+
+    try {
+      // Update the profiles table
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ username: newUsername })
+        .eq("id", user?.id);
+
+      if (profileError) {
+        console.error("Supabase error:", profileError);
+        setMessage(`Error: ${profileError.message}`);
+        return;
+      }
+
+      // Update user metadata
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { username: newUsername },
+      });
+
+      if (updateError) {
+        console.error("Update error:", updateError);
+        setMessage(`Error: ${updateError.message}`);
+        return;
+      }
+
+      console.log("Username Change Successful");
+      setMessage("Username Change Successful!");
+      router.push("/home");
+    } catch (err) {
+      console.error("Change error:", err);
+      setMessage(
+        `An error occurred: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`
+      );
+    }
   };
 
   return (
@@ -46,15 +89,15 @@ export default function ProfilePage() {
           </button>
           <button className="hover:scale-105">
             <Link href="/info">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="40px"
-              viewBox="0 -960 960 960"
-              width="40px"
-              fill="#000000"
-            >
-              <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="40px"
+                viewBox="0 -960 960 960"
+                width="40px"
+                fill="#000000"
+              >
+                <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+              </svg>
             </Link>
           </button>
           <button className="hover:scale-105">
@@ -72,56 +115,58 @@ export default function ProfilePage() {
           </button>
         </nav>
       </header>
+
       <div className="flex justify-end mt-4 mr-8">
-        <div>
+        <div className="pt-4">
           <button
-              onClick={signOut}
-              className="text-red-400 rounded-md p-2 bg-red-200 font-bold hover:scale-105"
-            >
-              Sign out?
+            onClick={signOut}
+            className="text-black rounded-md p-2 bg-red-400 font-bold hover:scale-105"
+          >
+            Sign out?
           </button>
         </div>
       </div>
-      <div className="relative pt-4 w-lvw h-lvh items-center flex flex-col flex-wrap">
-        <div className="grid grid-cols-3 w-full items-center px-14">
-          {/* 3 part grid where this empty div is the 1st section */}
-          <div></div>
+
+      <div className="relative pt-4 w-lvw items-center flex flex-col flex-wrap">
+        <div className="flex justify-center w-full">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg text-center">
-            Edit Profile:
+            Edit Profile
           </h1>
         </div>
         <div className="flex flex-col">
           <div className="w-[40vw] h-[50vh] flex flex-col flex-wrap pt-6">
             <div className="gap-1 flex flex-row mb-4">
               <h2 className="font-bold text-xl drop-shadow-lg">
-                Current Username:
+                Current Username: {username}
               </h2>
-              <h2 className="font-bold text-xl drop-shadow-lg">{username}</h2>
             </div>
 
-            <div className="gap-1">
-              <h2 className="font-bold text-xl drop-shadow-lg">
-                Change Username?
-              </h2>
-              <input
-                type="text"
-                className="font-bold p-1 bg-neutral-100 rounded border-2"
-                placeholder="imawesome123"
-                maxLength={30}
-                id="playerTag"
-              />
-            </div>
+            <form onSubmit={changeUsername}>
+              <div className="gap-1">
+                <h2 className="font-bold text-xl drop-shadow-lg">
+                  Change Username?
+                </h2>
+                <input
+                  type="text"
+                  className="font-bold p-1 bg-neutral-100 rounded border-2"
+                  placeholder="imawesome123"
+                  maxLength={30}
+                  id="playerTag"
+                  value={newUsername}
+                  onChange={(e) => setNewUsername(e.target.value)}
+                />
+              </div>
 
-            <div className="flex justify-center items-center pt-32">
-              <Link
-                href="/play"
-                className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
-            drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
-            ease-out shadow-lg"
-              >
-                <button>Save</button>
-              </Link>
-            </div>
+              <div className="flex justify-center items-center pt-32">
+                <div
+                  className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+                  drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
+                  ease-out shadow-lg"
+                >
+                  <button type="submit">Save</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
