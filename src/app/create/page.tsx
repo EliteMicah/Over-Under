@@ -93,7 +93,7 @@ function createPage() {
   };
 
   return (
-    <div className="min-h-screen w-screen flex-auto bg-gray-200">
+    <div className="h-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
@@ -167,10 +167,6 @@ function createPage() {
               required
             />
 
-        <div className="mt-8 flex justify-center items-center pt-7">
-          <Link
-            href="/play"
-            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
               What will you be betting on?
             </h2>
