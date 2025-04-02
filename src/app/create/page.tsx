@@ -208,13 +208,14 @@ function createPage() {
           </div>
 
           <div className="flex justify-center items-center pt-10">
-            <div
-              className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+            <button
+              className="bg-sky-300 text-4xl font-bold font-impact rounded-[6px] px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
+              type="submit"
             >
-              <button type="submit">Create!</button>
-            </div>
+              Create!
+            </button>
           </div>
         </form>
       </div>

@@ -120,7 +120,7 @@ export default function ProfilePage() {
         <div className="pt-4">
           <button
             onClick={signOut}
-            className="text-black rounded-md p-2 bg-red-400 font-bold hover:scale-105"
+            className="text-black p-2 rounded-[6px] bg-red-400 font-bold hover:scale-105"
           >
             Sign out?
           </button>
@@ -158,13 +158,14 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex justify-center items-center pt-32">
-                <div
-                  className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+                <button
+                  className="bg-sky-300 text-4xl font-bold font-impact rounded-[6px] px-28 py-6
                   drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
                   ease-out shadow-lg"
+                  type="submit"
                 >
-                  <button type="submit">Save</button>
-                </div>
+                  Save
+                </button>
               </div>
             </form>
           </div>
