@@ -112,15 +112,17 @@ function SignInPage() {
       </header>
 
       <div className=" relative pt-14 items-center flex flex-col flex-wrap">
-        <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
+        <div className="flex gap-4 justify-center items-center">
+          <h1 className="font-Modak text-4xl lg:text-7xl font-bold drop-shadow-lg">
             Sign In
           </h1>
         </div>
 
-        {message && <span>{message}</span>}
-        <form onSubmit={handleSubmit}>
-          <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
+        <form
+          onSubmit={handleSubmit}
+          className="pt-4 flex flex-col items-center"
+        >
+          <div className="w-[50vw] h-auto gap-y-2 flex flex-col">
             <h2 className="font-bold text-xl drop-shadow-lg">Email</h2>
             <input
               type="text"
@@ -142,11 +144,12 @@ function SignInPage() {
             />
           </div>
 
-          <div className="flex justify-center items-center pt-7">
+          {message && <span className="mt-2">{message}</span>}
+          <div className="flex justify-center items-center pt-20 w-full">
             <button
-              className="bg-sky-300 text-4xl font-bold font-impact rounded-[6px] px-28 py-6
-            drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
-            ease-out shadow-lg"
+              className="bg-sky-300 text-xl lg:text-4xl font-bold font-impact rounded-[6px] px-10 py-3 lg:px-28 lg:py-6
+              drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
+              ease-out shadow-lg"
               type="submit"
             >
               Sign in

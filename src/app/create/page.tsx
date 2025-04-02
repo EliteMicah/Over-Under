@@ -148,15 +148,13 @@ function createPage() {
       <div className="relative pt-14 w-lvw items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
-            Create your Ruleset:
+            Create your Ruleset
           </h1>
         </div>
 
         <form onSubmit={createGame}>
-          <div className="w-[50vw] gap-y-2 flex flex-col">
-            <h2 className="font-bold text-xl drop-shadow-lg">
-              Name your game:
-            </h2>
+          <div className="w-[50vw] gap-y-2 flex flex-col border-black">
+            <h2 className="font-bold text-xl drop-shadow-lg">Name your game</h2>
             <input
               type="text"
               className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
@@ -181,7 +179,7 @@ function createPage() {
             />
 
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-              Set the line:
+              Set the line
             </h2>
             <input
               type="number"
@@ -194,12 +192,12 @@ function createPage() {
             />
 
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-              Make the deadline:
+              Make the deadline
             </h2>
             <input
               type="datetime-local"
               className={`font-bold w-[15vw] p-1 bg-neutral-100 rounded border-2 transition-colors ${
-                hasValue ? "text-black" : "text-gray-400"
+                deadline ? "text-black" : "text-gray-400"
               }`}
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}

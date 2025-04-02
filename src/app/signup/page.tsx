@@ -109,18 +109,18 @@ function SignUpPage() {
 
       <div className=" relative pt-14 items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-4xl lg:text-7xl font-bold drop-shadow-lg">
             Welcome
           </h1>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="w-[50vw] h-[40vh] gap-y-2 flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center">
+          <div className="w-[50vw] h-auto gap-y-2 flex flex-col">
             <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
 
             <input
               type="text"
-              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
+              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
               placeholder="SuperCoolUsername123"
               maxLength={30}
               value={username}
@@ -131,7 +131,7 @@ function SignUpPage() {
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Email</h2>
             <input
               type="text"
-              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded-lg border-2"
+              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
               placeholder="example@email.com"
               maxLength={120}
               value={email}
@@ -142,7 +142,7 @@ function SignUpPage() {
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
             <input
               type="password"
-              className="font-bold w-[20vw] p-1 bg-neutral-100 rounded-lg border-2"
+              className="font-bold w-[20vw] p-1 bg-neutral-100 rounded border-2"
               placeholder="•••••••••••••••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -154,7 +154,7 @@ function SignUpPage() {
             </h2>
             <input
               type="password"
-              className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded-lg border-2"
+              className="font-bold w-[20vw] px-1 py-1 bg-neutral-100 rounded border-2"
               placeholder="•••••••••••••••••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -162,12 +162,12 @@ function SignUpPage() {
             />
           </div>
 
-          {message && <span>{message}</span>}
-          <div className="flex justify-center items-center pt-7">
+          {message && <span className="mt-2">{message}</span>}
+          <div className="flex justify-center items-center pt-7 w-full">
             <button
-              className="bg-sky-300 text-4xl font-bold font-impact rounded-[6px] px-28 py-6
-            drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
-            ease-out shadow-lg"
+              className="bg-sky-300 text-xl lg:text-4xl font-bold font-impact rounded-[6px] px-10 py-3 
+              lg:px-28 lg:py-6 drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 
+              transition-all duration-75 ease-out shadow-lg"
               type="submit"
             >
               Register
