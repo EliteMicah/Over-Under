@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Modak } from "next/font/google";
 import { AuthProvider } from "../context/AuthContext";
 import { PropsWithChildren } from "react";
 import "./globals.css";
@@ -14,6 +15,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const modak = Modak({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-modak",
+});
+
 export const metadata: Metadata = {
   title: "Over Under, a Next.js App",
   description:
@@ -24,7 +31,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${modak.variable} antialiased`}
       >
         <AuthProvider>{children}</AuthProvider>
       </body>

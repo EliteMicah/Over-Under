@@ -60,7 +60,7 @@ function SignInPage() {
     <div className="min-h-screen w-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
-          <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
+          <h1 className="text-4xl font-Modak">Over Under</h1>
         </nav>
 
         {/* GitHub Nav Button */}
@@ -113,7 +113,7 @@ function SignInPage() {
 
       <div className=" relative pt-14 items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center">
-          <h1 className="font-Modak text-4xl lg:text-7xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-4xl lg:text-7xl drop-shadow-lg">
             Sign In
           </h1>
         </div>
