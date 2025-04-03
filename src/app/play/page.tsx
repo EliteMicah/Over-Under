@@ -10,7 +10,7 @@ function playPage() {
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
-            <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
+            <h1 className="text-4xl font-Modak">Over Under</h1>
           </Link>
         </nav>
         <nav className="flex-row-reverse space-x-4 place-items-center">
@@ -66,13 +66,13 @@ function playPage() {
       </div>
       <div className="relative pt-[10px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-16">
-          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-7xl drop-shadow-lg">
             Bet group name here
           </h1>
         </div>
         <div className="flex gap-16 justify-center items-center pb-16">
           <h2 className="font-bold text-3xl drop-shadow-lg">
-            Bet description here:
+            Bet description here
           </h2>
         </div>
         <div className="w-[50vw] h-[20vh] gap-y-4 flex flex-col">
@@ -93,7 +93,7 @@ function playPage() {
         <div className="flex justify-center items-center mt-2">
           <Link
             href={"/lobby"}
-            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+            className="font-Modak bg-sky-300 text-4xl font-impact rounded-lg px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
           >
