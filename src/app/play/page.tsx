@@ -3,8 +3,51 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "@/config/supabaseClient";
 import "../../app/BackgroundAnimation.css";
+import { useRouter } from "next/navigation";
 
 function playPage() {
+  const router = useRouter();
+  const [gameDetails, setGameDetails] = useState(null);
+  const [gameName, setGameName] = useState("");
+  const [betDescription, setBetDescription] = useState("");
+  const [line, setLine] = useState("");
+  const [deadline, setDeadline] = useState("");
+  const [gameid, setGameid] = useState("");
+  const [userBet, setUserBet] = useState("");
+  const [message, setMessage] = useState("");
+
+  const placeBet = async (event: React.FormEvent<HTMLFormElement>) => {};
+
+  useEffect(() => {
+    const fetchGameDetails = async () => {
+      const query = new URLSearchParams(window.location.search);
+      const gameidParam = query.get("gameid");
+      const gameNameParam = query.get("game_name");
+
+      if (gameidParam) {
+        setGameid(gameidParam);
+        const { data, error } = await supabase
+          .from("games")
+          .select("*")
+          .eq("gameid", gameidParam)
+          .single();
+
+        if (error) {
+          console.error("Error fetching game details:", error);
+          setMessage("Error fetching game details.");
+        } else {
+          setGameDetails(data);
+          setGameName(data.game_name);
+          setBetDescription(data.bet_description);
+          setLine(data.line);
+          setDeadline(data.deadline);
+        }
+      }
+    };
+
+    fetchGameDetails();
+  }, []);
+
   return (
     <div className="min-h-screen w-screen bg-gray-200 flex-auto">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
@@ -59,47 +102,62 @@ function playPage() {
       </header>
       <div className="flex justify-end mt-4 mr-8">
         <div>
-          <h2 className="text-black-400 rounded-md p-2 font-bold hover:scale-105 text-xl">
-            Game ID
-          </h2>
+          <h2 className="text-black-400 font-bold p-2 text-xl">#{gameid}</h2>
         </div>
       </div>
       <div className="relative pt-[10px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-16">
           <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
-            Bet group name here
+            {gameName}
           </h1>
         </div>
         <div className="flex gap-16 justify-center items-center pb-16">
-          <h2 className="font-bold text-3xl drop-shadow-lg">
-            Bet description here:
-          </h2>
+          <h2 className="font-bold text-xl drop-shadow-lg">{betDescription}</h2>
         </div>
-        <div className="w-[50vw] h-[20vh] gap-y-4 flex flex-col">
-          <h2 className="font-bold text-3xl drop-shadow-lg">
-            Game Leader set the line to:
-          </h2>
-          <div className="flex items-center gap-4">
-            <h2 className="font-bold text-3xl drop-shadow-lg">My Bet:</h2>
-            <input
-              type="number"
-              className="font-bold w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
-              placeholder="20"
-              maxLength={6}
-              //value={userBet}
-            />
+        <form onSubmit={placeBet}>
+          <div className="w-[50vw] h-[20vh] gap-y-4 flex flex-col">
+            <h2 className="font-bold text-xl">
+              Game Leader has set the line to: {line}
+            </h2>
+
+            <div className="flex items-center gap-4">
+              <h2 className="font-bold text-xl">My Bet:</h2>
+              <select
+                className="font-bold w-[10vw] p-1 bg-neutral-100 rounded border-2"
+                value={userBet}
+                onChange={(e) => setUserBet(e.target.value)}
+                required
+              >
+                <option value="">Select</option>
+                <option value="Over">Over</option>
+                <option value="Exact">Exact</option>
+                <option value="Under">Under</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="flex justify-center items-center mt-2">
-          <Link
-            href={"/lobby"}
-            className="bg-sky-300 text-4xl font-bold font-impact rounded-lg px-28 py-6
+          <div className="flex justify-center items-center mt-2">
+            <button
+              className="bg-sky-300 text-4xl font-bold font-impact rounded-[6px] px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
-          >
-            <button>Place Bet!</button>
-          </Link>
-        </div>
+              type="submit"
+            >
+              Place Bet!
+            </button>
+          </div>
+        </form>
+        {/* <div className="pt-10">
+          {gameDetails ? (
+            <div>
+              <h3 className="font-bold">{gameDetails.game_name}</h3>
+              <p>{gameDetails.bet_description}</p>
+              <p>Line: {gameDetails.line}</p>
+              <p>Deadline: {new Date(gameDetails.deadline).toLocaleString()}</p>
+            </div>
+          ) : (
+            <p>{message}</p>
+          )}
+        </div> */}
       </div>
     </div>
   );

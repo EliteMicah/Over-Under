@@ -8,10 +8,31 @@ import "../../app/BackgroundAnimation.css";
 function joinPage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
+  const [gameid, setGameID] = useState("");
 
   const findGame = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage("");
+
+    // Query the games table for the entered game ID
+    const { data, error } = await supabase
+      .from("games")
+      .select("*")
+      .eq("gameid", gameid)
+      .single(); // Use .single() to get a single record
+
+    if (error) {
+      console.error("Error fetching game:", error);
+      setMessage("Error fetching game. Please try again.");
+      return;
+    }
+
+    if (data) {
+      // Navigate to the play page with the game ID
+      router.push(`/play?gameid=${gameid}`);
+    } else {
+      setMessage("Game not found. Please check the ID and try again.");
+    }
   };
 
   return (
@@ -83,7 +104,10 @@ function joinPage() {
               type="text"
               className="font-bold w-300 p-1 bg-neutral-100 rounded border-2"
               placeholder="#jbwJeLhOPd"
-              maxLength={11}
+              maxLength={8}
+              minLength={8}
+              value={gameid}
+              onChange={(e) => setGameID(e.target.value)}
             />
           </div>
 
@@ -97,6 +121,7 @@ function joinPage() {
               Join
             </button>
           </div>
+          {message && <span className="mt-2">{message}</span>}
         </form>
       </div>
     </div>

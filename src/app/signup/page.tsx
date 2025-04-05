@@ -107,7 +107,7 @@ function SignUpPage() {
         </nav>
       </header>
 
-      <div className=" relative pt-14 items-center flex flex-col flex-wrap">
+      <div className="relative pt-14 items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
           <h1 className="font-Modak text-4xl lg:text-7xl font-bold drop-shadow-lg">
             Welcome
