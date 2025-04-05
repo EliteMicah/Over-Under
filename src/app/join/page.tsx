@@ -40,7 +40,7 @@ function joinPage() {
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
-            <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
+            <h1 className="text-4xl font-Modak">Over Under</h1>
           </Link>
         </nav>
         <nav className="flex-row-reverse space-x-4 place-items-center">
@@ -90,7 +90,7 @@ function joinPage() {
 
       <div className="relative pt-14 w-lvw items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-5xl drop-shadow-lg">
             Join a Game!
           </h1>
         </div>
@@ -98,7 +98,7 @@ function joinPage() {
         <form onSubmit={findGame}>
           <div className="flex flex-col flex-wrap gap-1 w-[30vw] h-[18vh] mt-5">
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-              Enter the game's ID Code
+              Enter the game's ID Code:
             </h2>
             <input
               type="text"
@@ -113,7 +113,7 @@ function joinPage() {
 
           <div className="flex justify-center items-center mt-10">
             <button
-              className="bg-sky-300 text-4xl font-bold font-impact rounded-[6px] px-28 py-6
+              className="font-Modak bg-sky-300 text-4xl font-impact rounded-[6px] px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
               type="submit"

@@ -13,7 +13,7 @@ function lobbyPage() {
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
-            <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
+            <h1 className="text-4xl font-Modak">Over Under</h1>
           </Link>
         </nav>
         <nav className="flex-row-reverse space-x-4 place-items-center">
@@ -74,7 +74,7 @@ function lobbyPage() {
       </div>
       <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-8 justify-center items-center pb-16">
-          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-7xl drop-shadow-lg">
             Bet Group Name Here
           </h1>
         </div>

@@ -97,7 +97,7 @@ function createPage() {
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
-            <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
+            <h1 className="text-4xl font-Modak">Over Under</h1>
           </Link>
         </nav>
         <nav className="flex-row-reverse space-x-4 place-items-center">
@@ -147,17 +147,17 @@ function createPage() {
 
       <div className="relative pt-14 w-lvw items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-5xl drop-shadow-lg">
             Create your Ruleset
           </h1>
         </div>
 
         <form onSubmit={createGame}>
-          <div className="w-[50vw] gap-y-2 flex flex-col border-black">
-            <h2 className="font-bold text-xl drop-shadow-lg">Name your game</h2>
+          <div className="font-bold w-[50vw] gap-y-2 flex flex-col border-black">
+            <h2 className="text-xl drop-shadow-lg">Name your game:</h2>
             <input
               type="text"
-              className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
+              className="w-[50vw] p-1 bg-neutral-100 rounded border-2"
               placeholder="Finance Bros"
               maxLength={85}
               value={gameName}
@@ -165,12 +165,12 @@ function createPage() {
               required
             />
 
-            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
+            <h2 className="text-xl mt-1 drop-shadow-lg">
               What will you be betting on?
             </h2>
             <input
               type="text"
-              className="font-bold w-[50vw] px-1 py-1 bg-neutral-100 rounded border-2"
+              className="w-[50vw] px-1 py-1 bg-neutral-100 rounded border-2"
               placeholder="How many times will Lucy ask a question in class"
               maxLength={120}
               value={betDescription}
@@ -178,12 +178,12 @@ function createPage() {
               required
             />
 
-            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-              Set the line
+            <h2 className="text-xl mt-1 drop-shadow-lg">
+              Set the line:
             </h2>
             <input
               type="number"
-              className="font-bold w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
+              className="w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
               placeholder="20"
               maxLength={6}
               value={line}
@@ -192,7 +192,7 @@ function createPage() {
             />
 
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-              Make the deadline
+              Make the deadline:
             </h2>
             <input
               type="datetime-local"
@@ -207,7 +207,7 @@ function createPage() {
 
           <div className="flex justify-center items-center pt-10">
             <button
-              className="bg-sky-300 text-4xl font-bold font-impact rounded-[6px] px-28 py-6
+              className="font-Modak bg-sky-300 text-4xl font-impact rounded-[6px] px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
               type="submit"
