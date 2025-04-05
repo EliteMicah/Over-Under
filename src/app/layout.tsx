@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Modak } from "next/font/google";
 import { AuthProvider } from "../context/AuthContext";
 import { PropsWithChildren } from "react";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,7 +34,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${modak.variable} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children} <Analytics />
+        </AuthProvider>
       </body>
     </html>
   );

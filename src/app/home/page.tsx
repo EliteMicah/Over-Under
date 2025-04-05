@@ -94,14 +94,14 @@ export default function HomePage() {
         </div>
         <div className="h-auto w-[80%] mx-auto mt-10 justify-evenly flex flex-wrap gap-4">
           <Link href={"/create"}>
-            <div className="h-48 w-48 md:w-72 md:h-72 lg:w-96 lg:h-96 flex flex-initial rounded-2xl bg-blue-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
+            <div className="h-44 w-44 md:w-72 md:h-72 lg:w-96 lg:h-96 flex flex-initial rounded-2xl bg-blue-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
               <h2 className="text-3xl md:text-5xl lg:text-7xl font-Modak text-gray-50">
                 Create
               </h2>
             </div>
           </Link>
           <Link href={"/join"}>
-            <div className="h-48 w-48 md:w-72 md:h-72 lg:w-96 lg:h-96 flex flex-initial rounded-2xl bg-red-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
+            <div className="h-44 w-44 md:w-72 md:h-72 lg:w-96 lg:h-96 flex flex-initial rounded-2xl bg-red-300 drop-shadow-md hover:scale-105 duration-75 ease-out place-content-center place-items-center">
               <h2 className="text-3xl md:text-5xl lg:text-7xl font-Modak text-gray-50">
                 Join
               </h2>
