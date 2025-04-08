@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 
 function playPage() {
   const router = useRouter();
-  const [gameDetails, setGameDetails] = useState(null);
   const [gameName, setGameName] = useState("");
   const [betDescription, setBetDescription] = useState("");
   const [line, setLine] = useState("");
@@ -15,14 +14,35 @@ function playPage() {
   const [gameid, setGameid] = useState("");
   const [userBet, setUserBet] = useState("");
   const [message, setMessage] = useState("");
+  const currentDate = new Date();
+  const customDateFormatter = new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+  const formattedDate = deadline
+    ? customDateFormatter.format(new Date(deadline))
+    : "";
 
   const placeBet = async (event: React.FormEvent<HTMLFormElement>) => {};
 
   useEffect(() => {
+    if (currentDate > new Date(deadline)) {
+      setDeadline(
+        "Deadline to place a bet has already passed, please join or create a new game!"
+      );
+      console.log(
+        "Deadline to place a bet has already passed, please join or create a new game!"
+      );
+    }
+
     const fetchGameDetails = async () => {
       const query = new URLSearchParams(window.location.search);
       const gameidParam = query.get("gameid");
-      const gameNameParam = query.get("game_name");
 
       if (gameidParam) {
         setGameid(gameidParam);
@@ -36,7 +56,6 @@ function playPage() {
           console.error("Error fetching game details:", error);
           setMessage("Error fetching game details.");
         } else {
-          setGameDetails(data);
           setGameName(data.game_name);
           setBetDescription(data.bet_description);
           setLine(data.line);
@@ -53,7 +72,7 @@ function playPage() {
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
-            <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
+            <h1 className="text-4xl font-Modak">Over Under</h1>
           </Link>
         </nav>
         <nav className="flex-row-reverse space-x-4 place-items-center">
@@ -100,10 +119,14 @@ function playPage() {
           </button>
         </nav>
       </header>
-      <div className="flex justify-end mt-4 mr-8">
-        <div>
-          <h2 className="text-black-400 font-bold p-2 text-xl">#{gameid}</h2>
+      <div className="flex mt-4 mx-8 justify-between">
+        <div className="flex flex-row items-center">
+          <h2 className="text-black-400 font-bold p-2 text-xl">Deadline:</h2>
+          <h2 className="text-black-400 font-bold p-1 text-xl rounded-[6px] bg-red-400">
+            &nbsp;{formattedDate}&nbsp;
+          </h2>
         </div>
+        <h2 className="text-black-400 font-bold p-2 text-xl">#{gameid}</h2>
       </div>
       <div className="relative pt-[10px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-16">
@@ -116,9 +139,14 @@ function playPage() {
         </div>
         <form onSubmit={placeBet}>
           <div className="w-[50vw] h-[20vh] gap-y-4 flex flex-col">
-            <h2 className="font-bold text-xl">
-              Game Leader has set the line to: {line}
-            </h2>
+            <div className="flex flex-row">
+              <h2 className="font-bold text-xl">
+                Game Leader has set the line to:&nbsp;
+              </h2>
+              <h2 className="font-bold text-xl bg-sky-300 rounded-[6px]">
+                &nbsp;{line}&nbsp;
+              </h2>
+            </div>
 
             <div className="flex items-center gap-4">
               <h2 className="font-bold text-xl">My Bet:</h2>
@@ -135,9 +163,10 @@ function playPage() {
               </select>
             </div>
           </div>
+          {message && <span className="mt-2">{message}</span>}
           <div className="flex justify-center items-center mt-2">
             <button
-              className="bg-sky-300 text-4xl font-bold font-impact rounded-[6px] px-28 py-6
+              className="bg-sky-300 text-4xl font-Modak font-impact rounded-[6px] px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
               type="submit"
@@ -146,18 +175,6 @@ function playPage() {
             </button>
           </div>
         </form>
-        {/* <div className="pt-10">
-          {gameDetails ? (
-            <div>
-              <h3 className="font-bold">{gameDetails.game_name}</h3>
-              <p>{gameDetails.bet_description}</p>
-              <p>Line: {gameDetails.line}</p>
-              <p>Deadline: {new Date(gameDetails.deadline).toLocaleString()}</p>
-            </div>
-          ) : (
-            <p>{message}</p>
-          )}
-        </div> */}
       </div>
     </div>
   );
