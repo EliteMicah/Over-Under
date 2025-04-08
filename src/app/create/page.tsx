@@ -178,9 +178,7 @@ function createPage() {
               required
             />
 
-            <h2 className="text-xl mt-1 drop-shadow-lg">
-              Set the line:
-            </h2>
+            <h2 className="text-xl mt-1 drop-shadow-lg">Set the line:</h2>
             <input
               type="number"
               className="w-[10vw] px-1 py-1 bg-neutral-100 rounded border-2"
@@ -207,7 +205,7 @@ function createPage() {
 
           <div className="flex justify-center items-center pt-10">
             <button
-              className="font-Modak bg-sky-300 text-4xl font-impact rounded-[6px] px-28 py-6
+              className="bg-sky-300 text-4xl font-Modak rounded-[6px] px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
               type="submit"

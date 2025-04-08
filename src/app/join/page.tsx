@@ -90,9 +90,7 @@ function joinPage() {
 
       <div className="relative pt-14 w-lvw items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-5xl drop-shadow-lg">
-            Join a Game!
-          </h1>
+          <h1 className="font-Modak text-5xl drop-shadow-lg">Join a Game!</h1>
         </div>
 
         <form onSubmit={findGame}>
@@ -113,7 +111,7 @@ function joinPage() {
 
           <div className="flex justify-center items-center mt-10">
             <button
-              className="font-Modak bg-sky-300 text-4xl font-impact rounded-[6px] px-28 py-6
+              className="bg-sky-300 text-4xl font-Modak rounded-[6px] px-28 py-6
             drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
             ease-out shadow-lg"
               type="submit"

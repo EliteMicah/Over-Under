@@ -5,9 +5,60 @@ import supabase from "@/config/supabaseClient";
 import "../../app/BackgroundAnimation.css";
 import { Check } from "lucide-react"; // Icon Library
 import { Card, CardContent } from "@/components/ui/card"; // Shadcn UI Components
-
+import { useRouter } from "next/navigation";
 
 function lobbyPage() {
+  const router = useRouter();
+  const [gameName, setGameName] = useState("");
+  const [betDescription, setBetDescription] = useState("");
+  const [line, setLine] = useState("");
+  const [deadline, setDeadline] = useState("");
+  const [gameid, setGameid] = useState("");
+  const [userBet, setUserBet] = useState("");
+  const [message, setMessage] = useState("");
+  const currentDate = new Date();
+  const customDateFormatter = new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+  const formattedDate = deadline
+    ? customDateFormatter.format(new Date(deadline))
+    : "";
+
+  useEffect(() => {
+    const fetchGameDetails = async () => {
+      const query = new URLSearchParams(window.location.search);
+      const gameidParam = query.get("gameid");
+
+      if (gameidParam) {
+        setGameid(gameidParam);
+        const { data, error } = await supabase
+          .from("games")
+          .select("*")
+          .eq("gameid", gameidParam)
+          .single();
+
+        if (error) {
+          console.error("Error fetching game details:", error);
+          setMessage("Error fetching game details.");
+        } else {
+          setGameName(data.game_name);
+          setBetDescription(data.bet_description);
+          setLine(data.line);
+          setDeadline(data.deadline);
+          router.push(`/lobby?gameid=${gameid}`);
+        }
+      }
+    };
+
+    fetchGameDetails();
+  }, []);
+
   return (
     <div className="min-h-screen w-screen bg-gray-200 flex-auto">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
@@ -34,15 +85,15 @@ function lobbyPage() {
           </button>
           <button className="hover:scale-105">
             <Link href="/info">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="40px"
-              viewBox="0 -960 960 960"
-              width="40px"
-              fill="#000000"
-            >
-              <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="40px"
+                viewBox="0 -960 960 960"
+                width="40px"
+                fill="#000000"
+              >
+                <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+              </svg>
             </Link>
           </button>
           <button className="hover:scale-105">
@@ -60,17 +111,14 @@ function lobbyPage() {
           </button>
         </nav>
       </header>
-      <div className="flex justify-between mt-4 mx-8">
-        <div>
-              <h2 className="text-black-400 rounded-md p-2 font-bold hover:scale-105 text-xl">
-              Time Remaining:
-              </h2>
+      <div className="flex mt-4 mx-8 justify-between">
+        <div className="flex flex-row items-center">
+          <h2 className="text-black-400 font-bold p-2 text-xl">Deadline:</h2>
+          <h2 className="text-black-400 font-bold p-1 text-xl rounded-[6px] bg-red-400">
+            &nbsp;{formattedDate}&nbsp;
+          </h2>
         </div>
-        <div>
-              <h2 className="text-black-400 rounded-md p-2 font-bold hover:scale-105 text-xl">
-              Game ID 
-              </h2>
-        </div>
+        <h2 className="text-black-400 font-bold p-2 text-xl">#{gameid}</h2>
       </div>
       <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-8 justify-center items-center pb-16">
@@ -79,24 +127,26 @@ function lobbyPage() {
           </h1>
         </div>
         <div>
-          <h2 className="font-bold text-3xl drop-shadow-lg">Bet description here</h2>
+          <h2 className="font-bold text-3xl drop-shadow-lg">
+            Bet description here
+          </h2>
         </div>
 
         <Card className="mt-8 p-4 flex flex-col items-center w-40 border-0 shadow-none">
-      {/* Circular Badge with Checkmark */}
-      <div className="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center">
-        <Check className="text-black w-8 h-8" />
+          {/* Circular Badge with Checkmark */}
+          <div className="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center">
+            <Check className="text-black w-8 h-8" />
+          </div>
+          {/* Crown and Username */}
+          <div className="relative mt-2 text-center">
+            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
+              👑 {/* Crown Emoji (Replace with an icon if needed) */}
+            </div>
+            <p className="font-bold text-black">UsernameHere</p>
+          </div>
+        </Card>
       </div>
-      {/* Crown and Username */}
-      <div className="relative mt-2 text-center">
-        <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
-          👑 {/* Crown Emoji (Replace with an icon if needed) */}
-        </div>
-        <p className="font-bold text-black">UsernameHere</p>
-      </div>
-    </Card>
-      </div>
-    </div>    
+    </div>
   );
 }
 
