@@ -51,7 +51,6 @@ function lobbyPage() {
           setBetDescription(data.bet_description);
           setLine(data.line);
           setDeadline(data.deadline);
-          router.push(`/lobby?gameid=${gameid}`);
         }
       }
     };
