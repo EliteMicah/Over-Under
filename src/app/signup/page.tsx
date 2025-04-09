@@ -58,7 +58,7 @@ function SignUpPage() {
     <div className="min-h-screen w-screen flex-auto bg-gray-200">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
-          <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
+          <h1 className="text-4xl font-Modak">Over Under</h1>
         </nav>
 
         {/* GitHub Nav Button */}
@@ -109,14 +109,14 @@ function SignUpPage() {
 
       <div className="relative pt-14 items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center pb-4">
-          <h1 className="font-Modak text-4xl lg:text-7xl font-bold drop-shadow-lg">
-            Welcome
+          <h1 className="font-Modak text-4xl lg:text-7xl drop-shadow-lg">
+            Welcome!
           </h1>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col items-center">
           <div className="w-[50vw] h-auto gap-y-2 flex flex-col">
-            <h2 className="font-bold text-xl drop-shadow-lg">Username</h2>
+            <h2 className="font-bold text-xl drop-shadow-lg">Username:</h2>
 
             <input
               type="text"
@@ -128,7 +128,7 @@ function SignUpPage() {
               required
             />
 
-            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Email</h2>
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Email:</h2>
             <input
               type="text"
               className="font-bold w-[50vw] p-1 bg-neutral-100 rounded border-2"
@@ -139,7 +139,7 @@ function SignUpPage() {
               required
             />
 
-            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password</h2>
+            <h2 className="font-bold text-xl mt-1 drop-shadow-lg">Password:</h2>
             <input
               type="password"
               className="font-bold w-[20vw] p-1 bg-neutral-100 rounded border-2"
@@ -150,7 +150,7 @@ function SignUpPage() {
             />
 
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-              Confirm Password
+              Confirm Password:
             </h2>
             <input
               type="password"
@@ -165,7 +165,7 @@ function SignUpPage() {
           {message && <span className="mt-2">{message}</span>}
           <div className="flex justify-center items-center pt-7 w-full">
             <button
-              className="bg-sky-300 text-xl lg:text-4xl font-bold font-impact rounded-[6px] px-10 py-3 
+              className="font-Modak bg-sky-300 text-xl lg:text-4xl font-impact rounded-[6px] px-10 py-3 
               lg:px-28 lg:py-6 drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 
               transition-all duration-75 ease-out shadow-lg"
               type="submit"

@@ -121,7 +121,7 @@ function lobbyPage() {
       </div>
       <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-8 justify-center items-center pb-16">
-          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
+          <h1 className="font-Modak text-7xl drop-shadow-lg">
             Bet Group Name Here
           </h1>
         </div>

@@ -26,5 +26,5 @@ body {
 }
 
 .font-Modak {
-  font-family: "Modak";
+  font-family: var(--font-modak);
 }

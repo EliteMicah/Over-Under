@@ -68,7 +68,7 @@ export default function ProfilePage() {
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
         <nav className="flex-row">
           <Link href={"/home"}>
-            <h1 className="font-extrabold text-4xl font-Modak">Over Under</h1>
+            <h1 className="text-4xl font-Modak">Over Under</h1>
           </Link>
         </nav>
         <nav className="flex-row-reverse space-x-4 place-items-center">
@@ -129,7 +129,7 @@ export default function ProfilePage() {
 
       <div className="relative pt-4 w-lvw items-center flex flex-col flex-wrap">
         <div className="flex justify-center w-full">
-          <h1 className="font-Modak text-5xl font-bold drop-shadow-lg text-center">
+          <h1 className="font-Modak text-5xl drop-shadow-lg text-center">
             Edit Profile
           </h1>
         </div>
