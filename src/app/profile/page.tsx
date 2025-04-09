@@ -11,6 +11,9 @@ export default function ProfilePage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [newUsername, setNewUsername] = useState("");
+  const [games, setGames] = useState<
+    { gameid: string; bet_description: string }[]
+  >([]);
 
   const { user } = useAuth();
 
@@ -62,6 +65,25 @@ export default function ProfilePage() {
       );
     }
   };
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from("games")
+          .select("gameid, bet_description")
+          .eq("creator_id", user.id);
+
+        if (error) {
+          console.error("Error fetching games:", error);
+        } else {
+          setGames(data || []);
+        }
+      }
+    };
+
+    fetchGames();
+  }, [user]);
 
   return (
     <div className="min-h-screen w-screen bg-gray-200 flex-auto">
@@ -128,14 +150,14 @@ export default function ProfilePage() {
       </div>
 
       <div className="relative pt-4 w-lvw items-center flex flex-col flex-wrap">
-        <div className="flex justify-center w-full">
-          <h1 className="font-Modak text-5xl drop-shadow-lg text-center">
-            Edit Profile
-          </h1>
-        </div>
-        <div className="flex flex-col">
-          <div className="w-[40vw] h-[50vh] flex flex-col flex-wrap pt-6">
-            <div className="gap-1 flex flex-row mb-4">
+        <div className="flex flex-row flex-wrap w-[90vw] justify-between">
+          <div className="flex flex-col flex-wrap pt-6 w-[30vw]">
+            <div className="flex justify-center mb-6">
+              <h1 className="font-Modak text-4xl lg:text-6xl drop-shadow-lg text-center">
+                Profile
+              </h1>
+            </div>
+            <div className="gap-1 mb-4">
               <h2 className="font-bold text-xl drop-shadow-lg">
                 Current Username: {username}
               </h2>
@@ -159,15 +181,34 @@ export default function ProfilePage() {
 
               <div className="flex justify-center items-center pt-32">
                 <button
-                  className="bg-sky-300 text-4xl font-Modak rounded-[6px] px-28 py-6
-                  drop-shadow-lg hover:scale-105 focus:scale-95 transition-all duration-75 
-                  ease-out shadow-lg"
+                  className="bg-sky-300 text-xl lg:text-4xl font-Modak rounded-[6px] px-10 py-3 lg:px-28 lg:py-6
+              drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
+              ease-out shadow-lg"
                   type="submit"
                 >
                   Save
                 </button>
               </div>
             </form>
+          </div>
+
+          {/* Created Games Section */}
+          <div className="flex flex-col flex-wrap pt-6 w-[50vw]">
+            <div className="flex justify-center mb-6">
+              <h1 className="font-Modak text-4xl lg:text-6xl drop-shadow-lg text-center">
+                Games
+              </h1>
+            </div>
+            {games.map((game) => (
+              <div key={game.gameid} className="gap-1 mb-4 flex flex-row">
+                <h2 className="font-bold text-xl drop-shadow-lg">
+                  #{game.gameid}:&nbsp;
+                </h2>
+                <h2 className="font-bold text-xl drop-shadow-lg">
+                  {game.bet_description}
+                </h2>
+              </div>
+            ))}
           </div>
         </div>
       </div>

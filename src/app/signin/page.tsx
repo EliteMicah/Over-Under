@@ -111,7 +111,7 @@ function SignInPage() {
         </nav>
       </header>
 
-      <div className=" relative pt-14 items-center flex flex-col flex-wrap">
+      <div className="relative pt-14 items-center flex flex-col flex-wrap">
         <div className="flex gap-4 justify-center items-center">
           <h1 className="font-Modak text-4xl lg:text-7xl drop-shadow-lg">
             Sign In
@@ -147,7 +147,7 @@ function SignInPage() {
           {message && <span className="mt-2">{message}</span>}
           <div className="flex justify-center items-center pt-20 w-full">
             <button
-              className="bg-sky-300 text-xl lg:text-4xl font-bold font-impact rounded-[6px] px-10 py-3 lg:px-28 lg:py-6
+              className="bg-sky-300 text-xl lg:text-4xl font-Modak rounded-[6px] px-10 py-3 lg:px-28 lg:py-6
               drop-shadow-lg hover:scale-105 hover:bg-opacity-90 focus:scale-95 transition-all duration-75 
               ease-out shadow-lg"
               type="submit"
