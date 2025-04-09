@@ -7,8 +7,8 @@ import "../../app/BackgroundAnimation.css";
 
 function createPage() {
   const router = useRouter();
-  const [hasValue, setHasValue] = useState(false);
   const [message, setMessage] = useState("");
+  const [gameid, setGameid] = useState("");
   const [gameName, setGameName] = useState("");
   const [betDescription, setBetDescription] = useState("");
   const [line, setLine] = useState("");
@@ -53,12 +53,13 @@ function createPage() {
       // The datetime-local input is in local time, so we'll convert it to UTC
       const deadlineDate = new Date(deadline);
       const utcDeadline = deadlineDate.toISOString();
+      const gameIDString = generateGameId();
 
       const { data, error } = await supabase
         .from("games")
         .insert([
           {
-            gameid: generateGameId(),
+            gameid: gameIDString,
             game_name: gameName,
             bet_description: betDescription,
             line: Number(line),
@@ -80,7 +81,7 @@ function createPage() {
       if (data) {
         console.log("Game creation Successful", data);
         setMessage("Game creation Successful!");
-        router.push("/play");
+        router.push(`/play?gameid=${gameIDString}`);
       }
     } catch (err) {
       console.error("Game creation error:", err);

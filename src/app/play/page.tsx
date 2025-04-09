@@ -14,7 +14,7 @@ function playPage() {
   const [gameid, setGameid] = useState("");
   const [userBet, setUserBet] = useState("");
   const [message, setMessage] = useState("");
-  const currentDate = new Date();
+  const [countdown, setCountdown] = useState<string>("");
   const customDateFormatter = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
     year: "numeric",
@@ -24,22 +24,62 @@ function playPage() {
     minute: "numeric",
     hour12: true,
   });
-  const formattedDate = deadline
-    ? customDateFormatter.format(new Date(deadline))
-    : "";
+  const formattedDate =
+    deadline && !isNaN(new Date(deadline).getTime())
+      ? customDateFormatter.format(new Date(deadline))
+      : "Invalid deadline";
 
-  const placeBet = async (event: React.FormEvent<HTMLFormElement>) => {};
+  const placeBet = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const currentDate = new Date();
+    const deadlineDate = new Date(deadline);
+
+    if (currentDate > deadlineDate) {
+      setMessage(
+        "Deadline to place a bet has already passed, please join or create a new game!"
+      );
+      return;
+    } else {
+      router.push(`/lobby?gameid=${gameid}`);
+    }
+  };
 
   useEffect(() => {
-    if (currentDate > new Date(deadline)) {
-      setDeadline(
-        "Deadline to place a bet has already passed, please join or create a new game!"
-      );
-      console.log(
-        "Deadline to place a bet has already passed, please join or create a new game!"
-      );
-    }
+    const deadlineDate = new Date(deadline);
 
+    const updateCountdown = () => {
+      const now = new Date();
+      const timeRemaining = deadlineDate.getTime() - now.getTime();
+
+      if (timeRemaining <= 0) {
+        setCountdown(
+          "Deadline to place a bet has already passed, please join or create a new game!"
+        );
+        setDeadline(
+          "Deadline to place a bet has already passed, please join or create a new game!"
+        );
+        clearInterval(timer);
+      } else {
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      }
+    };
+
+    const timer = setInterval(updateCountdown, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(timer);
+  }, [deadline]);
+
+  useEffect(() => {
     const fetchGameDetails = async () => {
       const query = new URLSearchParams(window.location.search);
       const gameidParam = query.get("gameid");
@@ -128,11 +168,15 @@ function playPage() {
         </div>
         <h2 className="text-black-400 font-bold p-2 text-xl">#{gameid}</h2>
       </div>
+      <div className="flex flex-row items-center mx-8">
+        <h2 className="text-black-400 font-bold p-2 text-xl">Countdown:</h2>
+        <h2 className="text-black-400 font-bold p-1 text-xl rounded-[6px] bg-green-400">
+          &nbsp;{countdown}&nbsp;
+        </h2>
+      </div>
       <div className="relative pt-[10px] w-lvw h-lvh items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-16">
-          <h1 className="font-Modak text-7xl font-bold drop-shadow-lg">
-            {gameName}
-          </h1>
+          <h1 className="font-Modak text-7xl drop-shadow-lg">{gameName}</h1>
         </div>
         <div className="flex gap-16 justify-center items-center pb-16">
           <h2 className="font-bold text-xl drop-shadow-lg">{betDescription}</h2>
