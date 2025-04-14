@@ -173,7 +173,7 @@ function createPage() {
               type="text"
               className="w-[50vw] px-1 py-1 bg-neutral-100 rounded border-2"
               placeholder="How many times will Lucy ask a question in class"
-              maxLength={120}
+              maxLength={100}
               value={betDescription}
               onChange={(e) => setBetDescription(e.target.value)}
               required

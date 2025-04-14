@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "@/config/supabaseClient";
-import "../../app/BackgroundAnimation.css";
 import { useRouter } from "next/navigation";
 
 function playPage() {
@@ -15,6 +14,10 @@ function playPage() {
   const [userBet, setUserBet] = useState("");
   const [message, setMessage] = useState("");
   const [countdown, setCountdown] = useState<string>("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [checkingExistingBet, setCheckingExistingBet] = useState(true); // New state to track initial bet check
   const customDateFormatter = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
     year: "numeric",
@@ -31,19 +34,161 @@ function playPage() {
 
   const placeBet = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
 
-    const currentDate = new Date();
-    const deadlineDate = new Date(deadline);
+    try {
+      // Check if deadline has passed
+      const currentDate = new Date();
+      const deadlineDate = new Date(deadline);
 
-    if (currentDate > deadlineDate) {
-      setMessage(
-        "Deadline to place a bet has already passed, please join or create a new game!"
-      );
-      return;
-    } else {
+      if (currentDate > deadlineDate) {
+        setMessage(
+          "Deadline to place a bet has already passed, please join or create a new game!"
+        );
+        return;
+      }
+
+      // Validate bet selection
+      if (!userBet) {
+        setMessage("Please select a bet (Over, Under, or Exact)");
+        return;
+      }
+
+      // Check if user has already placed a bet for this game
+      const { data: existingBets, error: checkError } = await supabase
+        .from("game_bets")
+        .select("id")
+        .eq("game_id", gameid)
+        .eq("user_id", userId);
+
+      if (checkError) {
+        console.error("Error checking existing bet:", checkError);
+        setMessage(`Error checking existing bet: ${checkError.message}`);
+        return;
+      }
+
+      if (existingBets && existingBets.length > 0) {
+        // Update existing bet
+        const { error: updateError } = await supabase
+          .from("game_bets")
+          .update({ bet: userBet, username: username })
+          .eq("id", existingBets[0].id);
+
+        if (updateError) {
+          console.error("Error updating bet:", updateError);
+          setMessage(`Failed to update your bet: ${updateError.message}`);
+          return;
+        }
+
+        setMessage("Your bet has been updated!");
+      } else {
+        // Insert new bet
+        const { error: insertError } = await supabase.from("game_bets").insert([
+          {
+            game_id: gameid,
+            user_id: userId,
+            bet: userBet,
+            username: username,
+          },
+        ]);
+
+        if (insertError) {
+          console.error("Error placing bet:", insertError);
+          setMessage(`Failed to place your bet: ${insertError.message}`);
+          return;
+        }
+
+        setMessage("Your bet has been placed successfully!");
+      }
+
+      // Redirect to lobby page after successful bet placement
       router.push(`/lobby?gameid=${gameid}`);
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      setMessage("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // Check if user has already placed a bet for this game
+  useEffect(() => {
+    const checkExistingBet = async () => {
+      if (userId && gameid) {
+        try {
+          const { data: existingBets, error } = await supabase
+            .from("game_bets")
+            .select("id, bet")
+            .eq("game_id", gameid)
+            .eq("user_id", userId);
+
+          if (error) {
+            console.error("Error checking existing bet:", error);
+            setMessage(
+              `Error checking if you already placed a bet: ${error.message}`
+            );
+          } else if (existingBets && existingBets.length > 0) {
+            // User has already placed a bet, redirect to lobby
+            setMessage(
+              "You've already placed a bet on this game. Redirecting to lobby..."
+            );
+            // Set a short timeout to allow the message to be seen
+            setTimeout(() => {
+              router.push(`/lobby?gameid=${gameid}`);
+            }, 1500);
+          }
+        } catch (error) {
+          console.error("Unexpected error checking bet:", error);
+        }
+        setCheckingExistingBet(false);
+      }
+    };
+
+    checkExistingBet();
+  }, [userId, gameid, router]);
+
+  useEffect(() => {
+    // Get current user
+    const getCurrentUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data && data.user) {
+        setUserId(data.user.id);
+
+        // Also fetch the username from user profile or metadata
+        try {
+          // First try to get it from user metadata if it exists there
+          if (data.user.user_metadata && data.user.user_metadata.username) {
+            setUsername(data.user.user_metadata.username);
+          }
+          // Otherwise, try fetching from a profiles table if you have one
+          else {
+            const { data: profileData, error: profileError } = await supabase
+              .from("profiles")
+              .select("username")
+              .eq("id", data.user.id)
+              .single();
+
+            if (profileData && !profileError) {
+              setUsername(profileData.username);
+            } else {
+              // Fallback to email if no username found
+              setUsername(data.user.email || null);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching username:", error);
+          // Fallback to email as username
+          setUsername(data.user.email || null);
+        }
+      } else {
+        // Handle unauthenticated user
+        setMessage("You must be logged in to place a bet");
+        router.push("/login"); // Redirect to login page
+      }
+    };
+
+    getCurrentUser();
+  }, [router]);
 
   useEffect(() => {
     const deadlineDate = new Date(deadline);
@@ -106,6 +251,11 @@ function playPage() {
 
     fetchGameDetails();
   }, []);
+
+  // You can add a loading state while checking for existing bets
+  if (checkingExistingBet) {
+    return <div className="container mx-auto p-4">Checking bet status...</div>;
+  }
 
   return (
     <div className="min-h-screen w-screen bg-gray-200 flex-auto">
@@ -174,7 +324,7 @@ function playPage() {
           &nbsp;{countdown}&nbsp;
         </h2>
       </div>
-      <div className="relative pt-[10px] w-lvw h-lvh items-center flex flex-col">
+      <div className="relative pt-[10px] w-lvw items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-16">
           <h1 className="font-Modak text-7xl drop-shadow-lg">{gameName}</h1>
         </div>
@@ -215,7 +365,7 @@ function playPage() {
             ease-out shadow-lg"
               type="submit"
             >
-              Place Bet!
+              {isLoading ? "Processing..." : "Place Bet"}
             </button>
           </div>
         </form>

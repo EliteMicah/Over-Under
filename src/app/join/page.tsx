@@ -96,12 +96,12 @@ function joinPage() {
         <form onSubmit={findGame}>
           <div className="flex flex-col flex-wrap gap-1 w-[30vw] h-[18vh] mt-5">
             <h2 className="font-bold text-xl mt-1 drop-shadow-lg">
-              Enter the game's ID Code:
+              Enter the game's ID Code
             </h2>
             <input
               type="text"
               className="font-bold w-300 p-1 bg-neutral-100 rounded border-2"
-              placeholder="#jbwJeLhOPd"
+              placeholder="jbwJeLhOPd"
               maxLength={8}
               minLength={8}
               value={gameid}

@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "@/config/supabaseClient";
-import "../../app/BackgroundAnimation.css";
-import { Check } from "lucide-react"; // Icon Library
-import { Card, CardContent } from "@/components/ui/card"; // Shadcn UI Components
+import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 
 function lobbyPage() {
@@ -14,8 +12,25 @@ function lobbyPage() {
   const [line, setLine] = useState("");
   const [deadline, setDeadline] = useState("");
   const [gameid, setGameid] = useState("");
-  const [userBet, setUserBet] = useState("");
   const [message, setMessage] = useState("");
+  const [countdown, setCountdown] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [hasUserPlacedBet, setHasUserPlacedBet] = useState(false);
+
+  // Define the type for a participant
+  type Participant = {
+    id: string;
+    user_id: string;
+    bet: string;
+    profiles: {
+      username: string;
+    };
+  };
+
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [creatorId, setCreatorId] = useState("");
+  const [currentUserId, setCurrentUserId] = useState("");
+
   const currentDate = new Date();
   const customDateFormatter = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
@@ -26,37 +41,202 @@ function lobbyPage() {
     minute: "numeric",
     hour12: true,
   });
+
   const formattedDate = deadline
     ? customDateFormatter.format(new Date(deadline))
     : "";
 
   useEffect(() => {
-    const fetchGameDetails = async () => {
+    const deadlineDate = new Date(deadline);
+    let timer: NodeJS.Timeout | undefined;
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const timeRemaining = deadlineDate.getTime() - now.getTime();
+
+      if (timeRemaining <= 0) {
+        setCountdown(
+          "Deadline to place a bet has already passed, please join or create a new game!"
+        );
+        clearInterval(timer);
+      } else {
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      }
+    };
+
+    if (deadline && !isNaN(new Date(deadline).getTime())) {
+      timer = setInterval(updateCountdown, 1000);
+      // Cleanup interval on component unmount
+      return () => clearInterval(timer);
+    }
+  }, [deadline]);
+
+  // Fetch game details and participants
+  const fetchGameDetails = async () => {
+    setLoading(true);
+    try {
       const query = new URLSearchParams(window.location.search);
       const gameidParam = query.get("gameid");
 
       if (gameidParam) {
         setGameid(gameidParam);
-        const { data, error } = await supabase
+
+        // Fetch game details from the games table
+        const { data: gameData, error: gameError } = await supabase
           .from("games")
           .select("*")
           .eq("gameid", gameidParam)
           .single();
 
-        if (error) {
-          console.error("Error fetching game details:", error);
+        if (gameError) {
+          console.error("Error fetching game details:", gameError);
           setMessage("Error fetching game details.");
-        } else {
-          setGameName(data.game_name);
-          setBetDescription(data.bet_description);
-          setLine(data.line);
-          setDeadline(data.deadline);
+          setLoading(false);
+          return;
         }
+
+        setGameName(gameData.game_name);
+        setBetDescription(gameData.bet_description);
+        setLine(gameData.line);
+        setDeadline(gameData.deadline);
+        setCreatorId(gameData.creator_id);
+
+        // Get all the bets for this game including username
+        const { data: betData, error: betError } = await supabase
+          .from("game_bets")
+          .select("id, user_id, bet, game_id, username")
+          .eq("game_id", gameidParam);
+
+        if (betError) {
+          console.error("Error fetching participant bets:", betError);
+          console.error("Error code:", betError.code);
+          console.error("Error message:", betError.message);
+          console.error("Error details:", betError.details);
+          setMessage(
+            `Error fetching participant data: ${
+              betError.message || "Unknown error"
+            }`
+          );
+          setLoading(false);
+          return;
+        }
+
+        // Format participants data with username directly from game_bets
+        const participantsWithUsernames = betData.map((bet) => ({
+          id: bet.id,
+          user_id: bet.user_id,
+          bet: bet.bet,
+          profiles: {
+            username: bet.username || "Unknown User",
+          },
+        }));
+
+        setParticipants(participantsWithUsernames);
+
+        // Check if current user has placed a bet
+        if (currentUserId && betData) {
+          const userHasBet = betData.some(
+            (item) => item.user_id === currentUserId
+          );
+          setHasUserPlacedBet(!!userHasBet);
+        }
+      }
+    } catch (error) {
+      console.error("Error in fetchGameDetails:", error);
+      setMessage("An error occurred while fetching game data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Get current user
+    const getCurrentUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data && data.user) {
+        setCurrentUserId(data.user.id);
       }
     };
 
-    fetchGameDetails();
+    getCurrentUser();
   }, []);
+
+  useEffect(() => {
+    if (currentUserId) {
+      fetchGameDetails();
+    }
+  }, [currentUserId]);
+
+  useEffect(() => {
+    // Set up real-time subscription to game_bets table
+    const setupRealtimeSubscription = async () => {
+      const query = new URLSearchParams(window.location.search);
+      const gameidParam = query.get("gameid");
+
+      if (gameidParam) {
+        const channel = supabase
+          .channel("game_bets_changes")
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "game_bets",
+              filter: `game_id=eq.${gameidParam}`,
+            },
+            (payload) => {
+              console.log("Real-time update received:", payload);
+              // Refresh participant data when changes occur
+              fetchGameDetails();
+            }
+          )
+          .subscribe();
+
+        return () => {
+          supabase.removeChannel(channel);
+        };
+      }
+    };
+
+    let cleanupFn: (() => void) | undefined;
+
+    if (gameid) {
+      setupRealtimeSubscription().then((cleanup) => {
+        cleanupFn = cleanup;
+      });
+    }
+
+    return () => {
+      if (cleanupFn) cleanupFn();
+    };
+  }, [gameid]);
+
+  // Function to determine if a user is the game creator/leader
+  const isUserCreator = (userId: string) => {
+    return userId === creatorId;
+  };
+
+  // Function to get bet color based on bet choice
+  const getBetColor = (betChoice: string) => {
+    switch (betChoice) {
+      case "Over":
+        return "bg-green-400";
+      case "Under":
+        return "bg-red-400";
+      case "Exact":
+        return "bg-yellow-400";
+      default:
+        return "bg-gray-400";
+    }
+  };
 
   return (
     <div className="min-h-screen w-screen bg-gray-200 flex-auto">
@@ -110,40 +290,79 @@ function lobbyPage() {
           </button>
         </nav>
       </header>
+
       <div className="flex mt-4 mx-8 justify-between">
         <div className="flex flex-row items-center">
           <h2 className="text-black-400 font-bold p-2 text-xl">Deadline:</h2>
-          <h2 className="text-black-400 font-bold p-1 text-xl rounded-[6px] bg-red-400">
+          <h2 className="text-black-400 font-bold p-1 text-xl rounded bg-red-400">
             &nbsp;{formattedDate}&nbsp;
           </h2>
         </div>
         <h2 className="text-black-400 font-bold p-2 text-xl">#{gameid}</h2>
       </div>
-      <div className="relative pt-[50px] w-lvw h-lvh items-center flex flex-col">
-        <div className="flex gap-8 justify-center items-center pb-16">
-          <h1 className="font-Modak text-7xl drop-shadow-lg">
-            Bet Group Name Here
-          </h1>
+      <div className="flex flex-row items-center mx-8">
+        <h2 className="text-black-400 font-bold p-2 text-xl">Countdown:</h2>
+        <h2 className="text-black-400 font-bold p-1 text-xl rounded bg-green-400">
+          &nbsp;{countdown}&nbsp;
+        </h2>
+      </div>
+      <div className="relative pt-2 w-full items-center flex flex-col">
+        <div className="flex gap-12 justify-center items-center pb-10">
+          <h1 className="font-Modak text-7xl drop-shadow-lg">{gameName}</h1>
         </div>
-        <div>
-          <h2 className="font-bold text-3xl drop-shadow-lg">
-            Bet description here
+        <div className="flex flex-col gap-4 justify-center items-center">
+          <h2 className="font-bold text-xl drop-shadow-lg">{betDescription}</h2>
+          <h2 className="font-bold text-xl">
+            Game Leader has set the line to:&nbsp;
+            <span className="font-bold text-xl p-1 bg-sky-300 rounded">
+              {line}
+            </span>
           </h2>
         </div>
+        {message && <span className="mt-2">{message}</span>}
+      </div>
 
-        <Card className="mt-8 p-4 flex flex-col items-center w-40 border-0 shadow-none">
-          {/* Circular Badge with Checkmark */}
-          <div className="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center">
-            <Check className="text-black w-8 h-8" />
-          </div>
-          {/* Crown and Username */}
-          <div className="relative mt-2 text-center">
-            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
-              👑 {/* Crown Emoji (Replace with an icon if needed) */}
-            </div>
-            <p className="font-bold text-black">UsernameHere</p>
-          </div>
-        </Card>
+      {/* Participants Section */}
+      <div className="relative mt-10 w-full items-center flex flex-col">
+        <h2 className="font-bold text-2xl mb-6">Game Participants</h2>
+
+        <div className="flex flex-wrap justify-center gap-4 max-w-3xl">
+          {participants.length > 0 ? (
+            participants.map((participant) => (
+              <Card key={participant.id} className="w-40 shadow-md">
+                <CardContent className="p-4 flex flex-col items-center">
+                  {/* Display crown for game creator/leader */}
+                  {isUserCreator(participant.user_id) && (
+                    <div className="text-2xl mb-1">👑</div>
+                  )}
+
+                  {/* Username - accessing from profiles join */}
+                  <p className="font-bold text-center mb-2">
+                    {participant.profiles?.username || "User"}
+                  </p>
+
+                  {/* Bet choice */}
+                  <div
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
+                      participant.bet
+                    )}`}
+                  >
+                    {participant.bet || "No bet"}
+                  </div>
+
+                  {/* Highlight current user */}
+                  {participant.user_id === currentUserId && (
+                    <p className="text-xs mt-2 text-blue-600 font-semibold">
+                      (You)
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-gray-500">No participants have joined yet.</p>
+          )}
+        </div>
       </div>
     </div>
   );

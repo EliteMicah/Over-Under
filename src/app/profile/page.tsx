@@ -11,9 +11,9 @@ export default function ProfilePage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [newUsername, setNewUsername] = useState("");
-  const [games, setGames] = useState<
-    { gameid: string; bet_description: string }[]
-  >([]);
+  const [games, setGames] = useState<{ gameid: string; game_name: string }[]>(
+    []
+  );
 
   const { user } = useAuth();
 
@@ -71,7 +71,7 @@ export default function ProfilePage() {
       if (user) {
         const { data, error } = await supabase
           .from("games")
-          .select("gameid, bet_description")
+          .select("gameid, game_name")
           .eq("creator_id", user.id);
 
         if (error) {
@@ -150,7 +150,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="relative pt-4 w-lvw items-center flex flex-col flex-wrap">
-        <div className="flex flex-row flex-wrap w-[90vw] justify-between">
+        <div className="flex flex-row flex-wrap w-[90vw] justify-center">
           <div className="flex flex-col flex-wrap pt-6 w-[30vw]">
             <div className="flex justify-center mb-6">
               <h1 className="font-Modak text-4xl lg:text-6xl drop-shadow-lg text-center">
@@ -193,7 +193,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Created Games Section */}
-          <div className="flex flex-col flex-wrap pt-6 w-[50vw]">
+          <div className="flex flex-col flex-wrap pt-6 w-[40vw]">
             <div className="flex justify-center mb-6">
               <h1 className="font-Modak text-4xl lg:text-6xl drop-shadow-lg text-center">
                 Games
@@ -205,7 +205,7 @@ export default function ProfilePage() {
                   #{game.gameid}:&nbsp;
                 </h2>
                 <h2 className="font-bold text-xl drop-shadow-lg">
-                  {game.bet_description}
+                  {game.game_name}
                 </h2>
               </div>
             ))}
