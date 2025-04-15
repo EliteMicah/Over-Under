@@ -14,12 +14,28 @@ function joinPage() {
     event.preventDefault();
     setMessage("");
 
-    // Query the games table for the entered game ID
+    const trimmedGameID = gameid.trim();
+    console.log("Game ID after trim:", trimmedGameID);
+    console.log("Game ID length:", trimmedGameID.length);
+    console.log(
+      "Game ID character codes:",
+      [...trimmedGameID].map((c) => c.charCodeAt(0))
+    );
+
+    if (trimmedGameID.length !== 8) {
+      setMessage("Game ID must be exactly 8 characters.");
+      return;
+    }
+
+    console.log("Searching for game with ID:", trimmedGameID);
     const { data, error } = await supabase
       .from("games")
       .select("*")
-      .eq("gameid", gameid)
-      .single(); // Use .single() to get a single record
+      .eq("gameid", trimmedGameID)
+      .single();
+
+    console.log("Query result:", data);
+    console.log("Query error:", error);
 
     if (error) {
       console.error("Error fetching game:", error);
@@ -28,8 +44,7 @@ function joinPage() {
     }
 
     if (data) {
-      // Navigate to the play page with the game ID
-      router.push(`/play?gameid=${gameid}`);
+      router.push(`/play?gameid=${trimmedGameID}`);
     } else {
       setMessage("Game not found. Please check the ID and try again.");
     }
@@ -101,7 +116,7 @@ function joinPage() {
             <input
               type="text"
               className="font-bold w-300 p-1 bg-neutral-100 rounded border-2"
-              placeholder="jbwJeLhOPd"
+              placeholder="jbwJeLhO"
               maxLength={8}
               minLength={8}
               value={gameid}

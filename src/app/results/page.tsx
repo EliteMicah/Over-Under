@@ -5,7 +5,7 @@ import supabase from "@/config/supabaseClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 
-function lobbyPage() {
+function resultsPage() {
   const router = useRouter();
   const [gameName, setGameName] = useState("");
   const [betDescription, setBetDescription] = useState("");
@@ -16,11 +16,6 @@ function lobbyPage() {
   const [countdown, setCountdown] = useState("");
   const [loading, setLoading] = useState(true);
   const [hasUserPlacedBet, setHasUserPlacedBet] = useState(false);
-  const [showResultPopup, setShowResultPopup] = useState(false);
-  const [finalResult, setFinalResult] = useState("");
-  const [finalResultValue, setFinalResultValue] = useState("");
-  const [isGameEnded, setIsGameEnded] = useState(false);
-  const [resultError, setResultError] = useState("");
 
   // Define the type for a participant
   type Participant = {
@@ -52,8 +47,6 @@ function lobbyPage() {
     : "";
 
   useEffect(() => {
-    if (!deadline || isGameEnded) return;
-
     const deadlineDate = new Date(deadline);
     let timer: NodeJS.Timeout | undefined;
 
@@ -65,13 +58,7 @@ function lobbyPage() {
         setCountdown(
           "Deadline to place a bet has already passed, please join or create a new game!"
         );
-        setIsGameEnded(true);
         clearInterval(timer);
-
-        // If the current user is the creator, show the result popup when deadline is reached
-        if (currentUserId === creatorId && !showResultPopup) {
-          setShowResultPopup(true);
-        }
       } else {
         const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
         const hours = Math.floor(
@@ -86,18 +73,11 @@ function lobbyPage() {
     };
 
     if (deadline && !isNaN(new Date(deadline).getTime())) {
-      // Run once immediately to set initial state
-      updateCountdown();
-
-      // Set up interval
       timer = setInterval(updateCountdown, 1000);
-
-      // Cleanup interval on component unmount or when dependencies change
-      return () => {
-        if (timer) clearInterval(timer);
-      };
+      // Cleanup interval on component unmount
+      return () => clearInterval(timer);
     }
-  }, [deadline, currentUserId, creatorId, showResultPopup, isGameEnded]);
+  }, [deadline]);
 
   // Fetch game details and participants
   const fetchGameDetails = async () => {
@@ -128,11 +108,6 @@ function lobbyPage() {
         setLine(gameData.line);
         setDeadline(gameData.deadline);
         setCreatorId(gameData.creator_id);
-
-        // Check if the game is already ended
-        if (gameData.is_ended) {
-          setIsGameEnded(true);
-        }
 
         // Get all the bets for this game including username
         const { data: betData, error: betError } = await supabase
@@ -263,58 +238,6 @@ function lobbyPage() {
     }
   };
 
-  // Handle submission of final result
-  const handleSubmitResult = async () => {
-    try {
-      // Validate inputs
-      if (!finalResult) {
-        setResultError("Please select a result type");
-        return;
-      }
-
-      if (!finalResultValue) {
-        setResultError("Please enter a final value");
-        return;
-      }
-
-      // Clear any previous errors
-      setResultError("");
-
-      // Update the game in the database
-      const { error } = await supabase
-        .from("games")
-        .update({
-          final_result: finalResult,
-          final_value: finalResultValue,
-          is_ended: true,
-        })
-        .eq("gameid", gameid);
-
-      if (error) {
-        console.error("Database error:", error);
-        setResultError(`Error submitting result: ${error.message}`);
-        return;
-      }
-
-      // Set local state
-      setIsGameEnded(true);
-      setShowResultPopup(false);
-
-      // Show success message
-      setMessage(
-        "Result submitted successfully! Redirecting to results page..."
-      );
-
-      // Redirect to results page after a short delay
-      setTimeout(() => {
-        router.push(`/results?gameid=${gameid}`);
-      }, 1500);
-    } catch (error) {
-      console.error("Error submitting result:", error);
-      setResultError("An error occurred while submitting the final result.");
-    }
-  };
-
   return (
     <div className="min-h-screen w-screen bg-gray-200 flex-auto">
       <header className="mx-auto max-w-full h-20 items-center justify-between p-4 lg:px-8 flex bg-blue-200">
@@ -383,7 +306,6 @@ function lobbyPage() {
           &nbsp;{countdown}&nbsp;
         </h2>
       </div>
-
       <div className="relative pt-2 w-full items-center flex flex-col">
         <div className="flex gap-12 justify-center items-center pb-10">
           <h1 className="font-Modak text-7xl drop-shadow-lg">{gameName}</h1>
@@ -400,74 +322,6 @@ function lobbyPage() {
         {message && <span className="mt-2">{message}</span>}
       </div>
 
-      {/* Game Leader Controls - only visible to the creator */}
-      {isUserCreator(currentUserId) && (
-        <div className="absolute pl-10">
-          {!showResultPopup ? (
-            <button
-              className="bg-white hover:bg-gray-100 text-black font-bold py-2 px-4 rounded"
-              onClick={() => setShowResultPopup(true)}
-            >
-              {isGameEnded ? "Game Ended" : "End Game & Submit Result"}
-            </button>
-          ) : (
-            <Card className="w-80 shadow-lg bg-white">
-              <CardContent className="p-4">
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium text-lg">Submit Final Result</h4>
-                    <p className="text-sm text-gray-500">
-                      As the game leader, enter the final result to end the
-                      game.
-                    </p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Final Value
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border rounded"
-                        value={finalResultValue}
-                        onChange={(e) => setFinalResultValue(e.target.value)}
-                        placeholder="Enter the final value"
-                      />
-                    </div>
-                  </div>
-
-                  {resultError && (
-                    <div className="text-red-500 text-sm">{resultError}</div>
-                  )}
-
-                  <div className="flex space-x-2">
-                    <button
-                      className="px-4 py-2 rounded font-medium text-white bg-blue-500 hover:bg-blue-600"
-                      onClick={() => {
-                        // Set a default result type if none is selected
-                        if (!finalResult) {
-                          setFinalResult("Over");
-                        }
-                        handleSubmitResult();
-                      }}
-                    >
-                      Submit & End Game
-                    </button>
-                    <button
-                      className="px-4 py-2 rounded font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
-                      onClick={() => setShowResultPopup(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      )}
-
       {/* Participants Section */}
       <div className="relative mt-10 w-full items-center flex flex-col">
         <h2 className="font-bold text-2xl mb-14">Game Participants</h2>
@@ -480,7 +334,7 @@ function lobbyPage() {
                 className="flex flex-col items-center mb-4"
               >
                 {/* Circular card with bet choice */}
-                <div className="w-24 h-24 rounded-full bg-sky-200 flex items-center justify-center mb-2 border border-gray-300 shadow-md">
+                <div className="w-24 h-24 rounded-full bg-sky-200 flex items-center justify-center mb-2 border border-gray-300">
                   <div
                     className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
                       participant.bet
@@ -520,4 +374,4 @@ function lobbyPage() {
   );
 }
 
-export default lobbyPage;
+export default resultsPage;
