@@ -394,80 +394,77 @@ function ResultsPage() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Participants Section with Winners Highlighted */}
-            <div className="w-full">
-              <h2 className="font-bold text-2xl mb-6 text-center">
-                Participants & Winners
-              </h2>
-
-              <div className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto">
-                {participants.length > 0 ? (
-                  participants.map((participant) => (
-                    <div
-                      key={participant.id}
-                      className={`flex flex-col items-center mb-6 transition-all duration-500 transform ${
-                        participant.isWinner ? "scale-110" : "scale-100"
-                      }`}
-                    >
-                      {/* Circular card with bet choice */}
-                      <div
-                        className={`w-24 h-24 rounded-full flex items-center justify-center mb-2 border-4 shadow-lg ${
-                          participant.isWinner
-                            ? "border-yellow-400 animate-pulse bg-gradient-to-r from-yellow-200 to-yellow-100"
-                            : "border-gray-300 bg-sky-200"
-                        }`}
-                      >
-                        <div
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
-                            participant.bet
-                          )}`}
-                        >
-                          {participant.bet || "No bet"}
-                        </div>
-                      </div>
-
-                      {/* Username and crown below the circle */}
-                      <div className="text-center">
-                        {/* Display crown for game creator/leader */}
-                        {isUserCreator(participant.user_id) && (
-                          <div className="text-xl text-center mb-1">👑</div>
-                        )}
-
-                        {/* Username */}
-                        <p className="font-bold text-center">
-                          {participant.username || "User"}
-                        </p>
-
-                        {/* Winner badge */}
-                        {participant.isWinner && (
-                          <div className="mt-1 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
-                            WINNER! 🏆
-                          </div>
-                        )}
-
-                        {/* Highlight current user */}
-                        {participant.user_id === currentUserId && (
-                          <p className="text-xs mt-1 text-blue-600 font-semibold">
-                            (You)
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-500">
-                    No participants joined this game.
-                  </p>
-                )}
-              </div>
-            </div>
           </div>
         </div>
 
         {/* LAST COLUMN - Share Results */}
         <div className="col-span-3 flex items-start justify-center"></div>
       </section>
+      {/* Participants Section with Winners Highlighted */}
+      <div className="w-full">
+        <h2 className="font-bold text-2xl mb-6 text-center">
+          Participants & Winners
+        </h2>
+
+        <div className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto">
+          {participants.length > 0 ? (
+            participants.map((participant) => (
+              <div
+                key={participant.id}
+                className={`flex flex-col items-center mb-6 transition-all duration-500 transform ${
+                  participant.isWinner ? "scale-110" : "scale-100"
+                }`}
+              >
+                {/* Circular card with bet choice */}
+                <div
+                  className={`w-24 h-24 rounded-full flex items-center justify-center mb-2 border-4 shadow-lg ${
+                    participant.isWinner
+                      ? "border-yellow-400 animate-pulse bg-gradient-to-r from-yellow-200 to-yellow-100"
+                      : "border-gray-300 bg-sky-200"
+                  }`}
+                >
+                  <div
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
+                      participant.bet
+                    )}`}
+                  >
+                    {participant.bet || "No bet"}
+                  </div>
+                </div>
+
+                {/* Username and crown below the circle */}
+                <div className="text-center">
+                  {/* Display crown for game creator/leader */}
+                  {isUserCreator(participant.user_id) && (
+                    <div className="text-xl text-center mb-1">👑</div>
+                  )}
+
+                  {/* Username */}
+                  <p className="font-bold text-center">
+                    {participant.username || "User"}
+                  </p>
+
+                  {/* Winner badge */}
+                  {participant.isWinner && (
+                    <div className="mt-1 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                      WINNER! 🏆
+                    </div>
+                  )}
+
+                  {/* Highlight current user */}
+                  {participant.user_id === currentUserId && (
+                    <p className="text-xs mt-1 text-blue-600 font-semibold">
+                      (You)
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No participants joined this game.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

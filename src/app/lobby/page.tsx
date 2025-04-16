@@ -51,10 +51,7 @@ function lobbyPage() {
     : "";
 
   useEffect(() => {
-    if (!deadline || !isGameEnded) return;
-    else {
-      router.push(`/results?gameid=${gameid}`);
-    }
+    if (!deadline && isGameEnded) return;
 
     const deadlineDate = new Date(deadline);
     let timer: NodeJS.Timeout | undefined;
@@ -134,6 +131,7 @@ function lobbyPage() {
         // Check if the game is already ended
         if (gameData.bet_ended) {
           setIsGameEnded(true);
+          router.push(`/results?gameid=${gameidParam}`);
         }
 
         // Get all the bets for this game including username
@@ -465,61 +463,59 @@ function lobbyPage() {
             </h2>
           </div>
           {message && <span className="mt-2">{message}</span>}
-          {/* Participants Section */}
-          <div className="relative mt-10 w-full items-center flex flex-col">
-            <h2 className="font-bold text-2xl mb-14">Game Participants</h2>
-
-            <div className="flex flex-wrap justify-center gap-6 max-w-3xl">
-              {participants.length > 0 ? (
-                participants.map((participant) => (
-                  <div
-                    key={participant.id}
-                    className="flex flex-col items-center mb-4"
-                  >
-                    {/* Circular card with bet choice */}
-                    <div className="w-24 h-24 rounded-full bg-sky-200 flex items-center justify-center mb-2 border border-gray-300 shadow-md">
-                      <div
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
-                          participant.bet
-                        )}`}
-                      >
-                        {participant.bet || "No bet"}
-                      </div>
-                    </div>
-
-                    {/* Username and crown below the circle */}
-                    <div className="text-center">
-                      {/* Display crown for game creator/leader */}
-                      {isUserCreator(participant.user_id) && (
-                        <div className="text-xl text-center mb-1">👑</div>
-                      )}
-
-                      {/* Username - accessing from profiles join */}
-                      <p className="font-bold text-center">
-                        {participant.profiles?.username || "User"}
-                      </p>
-
-                      {/* Highlight current user */}
-                      {participant.user_id === currentUserId && (
-                        <p className="text-xs mt-1 text-blue-600 font-semibold">
-                          (You)
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500">
-                  No participants have joined yet.
-                </p>
-              )}
-            </div>
-          </div>
         </div>
 
         {/* LAST COLUMN - EMPTY */}
         <div className="col-span-3"></div>
       </section>
+      {/* Participants Section */}
+      <div className="relative mt-10 w-full items-center flex flex-col">
+        <h2 className="font-bold text-2xl mb-14">Game Participants</h2>
+
+        <div className="flex flex-wrap justify-center gap-6 max-w-3xl">
+          {participants.length > 0 ? (
+            participants.map((participant) => (
+              <div
+                key={participant.id}
+                className="flex flex-col items-center mb-4"
+              >
+                {/* Circular card with bet choice */}
+                <div className="w-24 h-24 rounded-full bg-sky-200 flex items-center justify-center mb-2 border border-gray-300 shadow-md">
+                  <div
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
+                      participant.bet
+                    )}`}
+                  >
+                    {participant.bet || "No bet"}
+                  </div>
+                </div>
+
+                {/* Username and crown below the circle */}
+                <div className="text-center">
+                  {/* Display crown for game creator/leader */}
+                  {isUserCreator(participant.user_id) && (
+                    <div className="text-xl text-center mb-1">👑</div>
+                  )}
+
+                  {/* Username - accessing from profiles join */}
+                  <p className="font-bold text-center">
+                    {participant.profiles?.username || "User"}
+                  </p>
+
+                  {/* Highlight current user */}
+                  {participant.user_id === currentUserId && (
+                    <p className="text-xs mt-1 text-blue-600 font-semibold">
+                      (You)
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No participants have joined yet.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
