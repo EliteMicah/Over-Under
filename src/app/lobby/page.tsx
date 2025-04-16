@@ -18,7 +18,6 @@ function lobbyPage() {
   const [hasUserPlacedBet, setHasUserPlacedBet] = useState(false);
   const [showResultPopup, setShowResultPopup] = useState(false);
   const [finalResult, setFinalResult] = useState("");
-  const [finalResultValue, setFinalResultValue] = useState("");
   const [isGameEnded, setIsGameEnded] = useState(false);
   const [resultError, setResultError] = useState("");
 
@@ -52,7 +51,10 @@ function lobbyPage() {
     : "";
 
   useEffect(() => {
-    if (!deadline || isGameEnded) return;
+    if (!deadline || !isGameEnded) return;
+    else {
+      router.push(`/results?gameid=${gameid}`);
+    }
 
     const deadlineDate = new Date(deadline);
     let timer: NodeJS.Timeout | undefined;
@@ -130,7 +132,7 @@ function lobbyPage() {
         setCreatorId(gameData.creator_id);
 
         // Check if the game is already ended
-        if (gameData.is_ended) {
+        if (gameData.bet_ended) {
           setIsGameEnded(true);
         }
 
@@ -263,56 +265,40 @@ function lobbyPage() {
     }
   };
 
-  // Handle submission of final result
-  const handleSubmitResult = async () => {
-    try {
-      // Validate inputs
-      if (!finalResult) {
-        setResultError("Please select a result type");
-        return;
-      }
+  const handleSubmitResult = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-      if (!finalResultValue) {
-        setResultError("Please enter a final value");
-        return;
-      }
-
-      // Clear any previous errors
-      setResultError("");
-
-      // Update the game in the database
-      const { error } = await supabase
-        .from("games")
-        .update({
-          final_result: finalResult,
-          final_value: finalResultValue,
-          is_ended: true,
-        })
-        .eq("gameid", gameid);
-
-      if (error) {
-        console.error("Database error:", error);
-        setResultError(`Error submitting result: ${error.message}`);
-        return;
-      }
-
-      // Set local state
-      setIsGameEnded(true);
-      setShowResultPopup(false);
-
-      // Show success message
-      setMessage(
-        "Result submitted successfully! Redirecting to results page..."
-      );
-
-      // Redirect to results page after a short delay
-      setTimeout(() => {
-        router.push(`/results?gameid=${gameid}`);
-      }, 1500);
-    } catch (error) {
-      console.error("Error submitting result:", error);
-      setResultError("An error occurred while submitting the final result.");
+    if (!finalResult) {
+      setResultError("Please enter a final value");
+      return;
     }
+
+    console.log("Submitting result:", { gameid: gameid, finalResult });
+
+    const { error } = await supabase
+      .from("games")
+      .update({
+        final_result: parseFloat(finalResult),
+        bet_ended: true,
+      })
+      .eq("gameid", gameid)
+      .select();
+
+    if (error) {
+      console.error("Supabase update error:", error);
+      setResultError(`Error submitting result: ${error.message}`);
+      return;
+    }
+
+    console.log("Update successful:");
+
+    setIsGameEnded(true);
+    setShowResultPopup(false);
+    setMessage("Result submitted successfully! Redirecting...");
+
+    setTimeout(() => {
+      router.push(`/results?gameid=${gameid}`);
+    }, 1500);
   };
 
   return (
@@ -372,7 +358,7 @@ function lobbyPage() {
         <div className="flex flex-row items-center">
           <h2 className="text-black-400 font-bold p-2 text-xl">Deadline:</h2>
           <h2 className="text-black-400 font-bold p-1 text-xl rounded bg-red-400">
-            &nbsp;{formattedDate}&nbsp;
+            &nbsp;{isGameEnded ? "Game Over" : formattedDate}&nbsp;
           </h2>
         </div>
         <h2 className="text-black-400 font-bold p-2 text-xl">#{gameid}</h2>
@@ -380,142 +366,160 @@ function lobbyPage() {
       <div className="flex flex-row items-center mx-8">
         <h2 className="text-black-400 font-bold p-2 text-xl">Countdown:</h2>
         <h2 className="text-black-400 font-bold p-1 text-xl rounded bg-green-400">
-          &nbsp;{countdown}&nbsp;
+          &nbsp;{isGameEnded ? "Game Over" : countdown}&nbsp;
         </h2>
       </div>
 
-      <div className="relative pt-2 w-full items-center flex flex-col">
-        <div className="flex gap-12 justify-center items-center pb-10">
-          <h1 className="font-Modak text-7xl drop-shadow-lg">{gameName}</h1>
-        </div>
-        <div className="flex flex-col gap-4 justify-center items-center">
-          <h2 className="font-bold text-xl drop-shadow-lg">{betDescription}</h2>
-          <h2 className="font-bold text-xl">
-            Game Leader has set the line to:&nbsp;
-            <span className="font-bold text-xl p-1 bg-sky-300 rounded">
-              {line}
-            </span>
-          </h2>
-        </div>
-        {message && <span className="mt-2">{message}</span>}
-      </div>
+      {/* GRID STARTS HERE */}
+      <section className="grid grid-cols-12 gap-4">
+        {/* FIRST COLUMN*/}
+        <div className="col-span-3 flex items-center justify-center h-full">
+          {/* Game Leader Controls - only visible to the creator */}
+          {isUserCreator(currentUserId) && (
+            <div className="pl-4">
+              {!showResultPopup ? (
+                <button
+                  className="bg-white hover:bg-gray-100 text-black font-bold py-2 px-4 rounded"
+                  onClick={() => !isGameEnded && setShowResultPopup(true)}
+                  disabled={isGameEnded}
+                >
+                  {isGameEnded ? "Game Ended" : "End Game & Submit Result"}
+                </button>
+              ) : (
+                <Card className="w-full shadow-lg bg-white">
+                  <CardContent className="p-4">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium text-lg">
+                          Submit Final Result
+                        </h4>
+                        <p className="text-sm text-gray-500">
+                          As the game leader, enter the final result to end the
+                          game.
+                        </p>
+                      </div>
 
-      {/* Game Leader Controls - only visible to the creator */}
-      {isUserCreator(currentUserId) && (
-        <div className="absolute pl-10">
-          {!showResultPopup ? (
-            <button
-              className="bg-white hover:bg-gray-100 text-black font-bold py-2 px-4 rounded"
-              onClick={() => setShowResultPopup(true)}
-            >
-              {isGameEnded ? "Game Ended" : "End Game & Submit Result"}
-            </button>
-          ) : (
-            <Card className="w-80 shadow-lg bg-white">
-              <CardContent className="p-4">
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium text-lg">Submit Final Result</h4>
-                    <p className="text-sm text-gray-500">
-                      As the game leader, enter the final result to end the
-                      game.
-                    </p>
-                  </div>
+                      <form onSubmit={handleSubmitResult}>
+                        <div className="space-y-3">
+                          <label className="block text-sm font-medium mb-1">
+                            Final Value
+                          </label>
+                          <input
+                            type="number"
+                            className="w-full p-2 border rounded"
+                            value={finalResult}
+                            onChange={(e) => setFinalResult(e.target.value)}
+                            placeholder="Enter the final value"
+                            required
+                          />
+                        </div>
 
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Final Value
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border rounded"
-                        value={finalResultValue}
-                        onChange={(e) => setFinalResultValue(e.target.value)}
-                        placeholder="Enter the final value"
-                      />
+                        {resultError && (
+                          <div className="text-red-500 text-sm">
+                            {resultError}
+                          </div>
+                        )}
+
+                        <div className="flex flex-col space-y-2 mt-2">
+                          <button
+                            className={`px-4 py-2 rounded font-medium text-white ${
+                              !finalResult
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-blue-500 hover:bg-blue-600"
+                            }`}
+                            type="submit"
+                            disabled={!finalResult}
+                          >
+                            Submit & End Game
+                          </button>
+                          <button
+                            className="px-4 py-2 rounded font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
+                            onClick={() => setShowResultPopup(false)}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* SECOND COLUMN */}
+        <div className="col-span-6 pt-2 w-full items-center flex flex-col h-full justify-center">
+          <div className="flex gap-12 justify-center items-center pb-10">
+            <h1 className="font-Modak text-7xl drop-shadow-lg">{gameName}</h1>
+          </div>
+          <div className="flex flex-col gap-4 justify-center items-center">
+            <h2 className="font-bold text-xl drop-shadow-lg">
+              {betDescription}
+            </h2>
+            <h2 className="font-bold text-xl">
+              Game Leader has set the line to:&nbsp;
+              <span className="font-bold text-xl p-1 bg-sky-300 rounded">
+                {line}
+              </span>
+            </h2>
+          </div>
+          {message && <span className="mt-2">{message}</span>}
+          {/* Participants Section */}
+          <div className="relative mt-10 w-full items-center flex flex-col">
+            <h2 className="font-bold text-2xl mb-14">Game Participants</h2>
+
+            <div className="flex flex-wrap justify-center gap-6 max-w-3xl">
+              {participants.length > 0 ? (
+                participants.map((participant) => (
+                  <div
+                    key={participant.id}
+                    className="flex flex-col items-center mb-4"
+                  >
+                    {/* Circular card with bet choice */}
+                    <div className="w-24 h-24 rounded-full bg-sky-200 flex items-center justify-center mb-2 border border-gray-300 shadow-md">
+                      <div
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
+                          participant.bet
+                        )}`}
+                      >
+                        {participant.bet || "No bet"}
+                      </div>
+                    </div>
+
+                    {/* Username and crown below the circle */}
+                    <div className="text-center">
+                      {/* Display crown for game creator/leader */}
+                      {isUserCreator(participant.user_id) && (
+                        <div className="text-xl text-center mb-1">👑</div>
+                      )}
+
+                      {/* Username - accessing from profiles join */}
+                      <p className="font-bold text-center">
+                        {participant.profiles?.username || "User"}
+                      </p>
+
+                      {/* Highlight current user */}
+                      {participant.user_id === currentUserId && (
+                        <p className="text-xs mt-1 text-blue-600 font-semibold">
+                          (You)
+                        </p>
+                      )}
                     </div>
                   </div>
-
-                  {resultError && (
-                    <div className="text-red-500 text-sm">{resultError}</div>
-                  )}
-
-                  <div className="flex space-x-2">
-                    <button
-                      className="px-4 py-2 rounded font-medium text-white bg-blue-500 hover:bg-blue-600"
-                      onClick={() => {
-                        // Set a default result type if none is selected
-                        if (!finalResult) {
-                          setFinalResult("Over");
-                        }
-                        handleSubmitResult();
-                      }}
-                    >
-                      Submit & End Game
-                    </button>
-                    <button
-                      className="px-4 py-2 rounded font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
-                      onClick={() => setShowResultPopup(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                ))
+              ) : (
+                <p className="text-gray-500">
+                  No participants have joined yet.
+                </p>
+              )}
+            </div>
+          </div>
         </div>
-      )}
 
-      {/* Participants Section */}
-      <div className="relative mt-10 w-full items-center flex flex-col">
-        <h2 className="font-bold text-2xl mb-14">Game Participants</h2>
-
-        <div className="flex flex-wrap justify-center gap-6 max-w-3xl">
-          {participants.length > 0 ? (
-            participants.map((participant) => (
-              <div
-                key={participant.id}
-                className="flex flex-col items-center mb-4"
-              >
-                {/* Circular card with bet choice */}
-                <div className="w-24 h-24 rounded-full bg-sky-200 flex items-center justify-center mb-2 border border-gray-300 shadow-md">
-                  <div
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
-                      participant.bet
-                    )}`}
-                  >
-                    {participant.bet || "No bet"}
-                  </div>
-                </div>
-
-                {/* Username and crown below the circle */}
-                <div className="text-center">
-                  {/* Display crown for game creator/leader */}
-                  {isUserCreator(participant.user_id) && (
-                    <div className="text-xl text-center mb-1">👑</div>
-                  )}
-
-                  {/* Username - accessing from profiles join */}
-                  <p className="font-bold text-center">
-                    {participant.profiles?.username || "User"}
-                  </p>
-
-                  {/* Highlight current user */}
-                  {participant.user_id === currentUserId && (
-                    <p className="text-xs mt-1 text-blue-600 font-semibold">
-                      (You)
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No participants have joined yet.</p>
-          )}
-        </div>
-      </div>
+        {/* LAST COLUMN - EMPTY */}
+        <div className="col-span-3"></div>
+      </section>
     </div>
   );
 }

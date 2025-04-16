@@ -5,33 +5,30 @@ import supabase from "@/config/supabaseClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 
-function resultsPage() {
+function ResultsPage() {
   const router = useRouter();
   const [gameName, setGameName] = useState("");
   const [betDescription, setBetDescription] = useState("");
   const [line, setLine] = useState("");
+  const [finalResult, setFinalResult] = useState("");
   const [deadline, setDeadline] = useState("");
   const [gameid, setGameid] = useState("");
   const [message, setMessage] = useState("");
-  const [countdown, setCountdown] = useState("");
   const [loading, setLoading] = useState(true);
-  const [hasUserPlacedBet, setHasUserPlacedBet] = useState(false);
+  const [creatorId, setCreatorId] = useState("");
+  const [currentUserId, setCurrentUserId] = useState("");
 
   // Define the type for a participant
   type Participant = {
     id: string;
     user_id: string;
     bet: string;
-    profiles: {
-      username: string;
-    };
+    username: string;
+    isWinner: boolean;
   };
 
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [creatorId, setCreatorId] = useState("");
-  const [currentUserId, setCurrentUserId] = useState("");
 
-  const currentDate = new Date();
   const customDateFormatter = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
     year: "numeric",
@@ -46,38 +43,32 @@ function resultsPage() {
     ? customDateFormatter.format(new Date(deadline))
     : "";
 
-  useEffect(() => {
-    const deadlineDate = new Date(deadline);
-    let timer: NodeJS.Timeout | undefined;
+  // Function to determine winners based on bet choice and final result
+  const determineWinners = (
+    participants: Participant[],
+    line: string,
+    finalResult: string
+  ) => {
+    const lineValue = parseFloat(line);
+    const resultValue = parseFloat(finalResult);
 
-    const updateCountdown = () => {
-      const now = new Date();
-      const timeRemaining = deadlineDate.getTime() - now.getTime();
+    return participants.map((participant) => {
+      let isWinner = false;
 
-      if (timeRemaining <= 0) {
-        setCountdown(
-          "Deadline to place a bet has already passed, please join or create a new game!"
-        );
-        clearInterval(timer);
-      } else {
-        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor(
-          (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-        setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      if (participant.bet === "Over" && resultValue > lineValue) {
+        isWinner = true;
+      } else if (participant.bet === "Under" && resultValue < lineValue) {
+        isWinner = true;
+      } else if (participant.bet === "Exact" && resultValue === lineValue) {
+        isWinner = true;
       }
-    };
 
-    if (deadline && !isNaN(new Date(deadline).getTime())) {
-      timer = setInterval(updateCountdown, 1000);
-      // Cleanup interval on component unmount
-      return () => clearInterval(timer);
-    }
-  }, [deadline]);
+      return {
+        ...participant,
+        isWinner,
+      };
+    });
+  };
 
   // Fetch game details and participants
   const fetchGameDetails = async () => {
@@ -103,9 +94,19 @@ function resultsPage() {
           return;
         }
 
+        if (!gameData.bet_ended || !gameData.final_result) {
+          // If the game hasn't ended yet, redirect back to the lobby
+          setMessage("This game hasn't ended yet. Redirecting to lobby...");
+          setTimeout(() => {
+            router.push(`/lobby?gameid=${gameidParam}`);
+          }, 2000);
+          return;
+        }
+
         setGameName(gameData.game_name);
         setBetDescription(gameData.bet_description);
         setLine(gameData.line);
+        setFinalResult(gameData.final_result);
         setDeadline(gameData.deadline);
         setCreatorId(gameData.creator_id);
 
@@ -117,9 +118,6 @@ function resultsPage() {
 
         if (betError) {
           console.error("Error fetching participant bets:", betError);
-          console.error("Error code:", betError.code);
-          console.error("Error message:", betError.message);
-          console.error("Error details:", betError.details);
           setMessage(
             `Error fetching participant data: ${
               betError.message || "Unknown error"
@@ -129,25 +127,23 @@ function resultsPage() {
           return;
         }
 
-        // Format participants data with username directly from game_bets
-        const participantsWithUsernames = betData.map((bet) => ({
+        // Format participants data
+        const participantsData = betData.map((bet) => ({
           id: bet.id,
           user_id: bet.user_id,
           bet: bet.bet,
-          profiles: {
-            username: bet.username || "Unknown User",
-          },
+          username: bet.username || "Unknown User",
+          isWinner: false, // Will be calculated next
         }));
 
-        setParticipants(participantsWithUsernames);
+        // Determine winners
+        const participantsWithWinners = determineWinners(
+          participantsData,
+          gameData.line,
+          gameData.final_result
+        );
 
-        // Check if current user has placed a bet
-        if (currentUserId && betData) {
-          const userHasBet = betData.some(
-            (item) => item.user_id === currentUserId
-          );
-          setHasUserPlacedBet(!!userHasBet);
-        }
+        setParticipants(participantsWithWinners);
       }
     } catch (error) {
       console.error("Error in fetchGameDetails:", error);
@@ -175,50 +171,6 @@ function resultsPage() {
     }
   }, [currentUserId]);
 
-  useEffect(() => {
-    // Set up real-time subscription to game_bets table
-    const setupRealtimeSubscription = async () => {
-      const query = new URLSearchParams(window.location.search);
-      const gameidParam = query.get("gameid");
-
-      if (gameidParam) {
-        const channel = supabase
-          .channel("game_bets_changes")
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "game_bets",
-              filter: `game_id=eq.${gameidParam}`,
-            },
-            (payload) => {
-              console.log("Real-time update received:", payload);
-              // Refresh participant data when changes occur
-              fetchGameDetails();
-            }
-          )
-          .subscribe();
-
-        return () => {
-          supabase.removeChannel(channel);
-        };
-      }
-    };
-
-    let cleanupFn: (() => void) | undefined;
-
-    if (gameid) {
-      setupRealtimeSubscription().then((cleanup) => {
-        cleanupFn = cleanup;
-      });
-    }
-
-    return () => {
-      if (cleanupFn) cleanupFn();
-    };
-  }, [gameid]);
-
   // Function to determine if a user is the game creator/leader
   const isUserCreator = (userId: string) => {
     return userId === creatorId;
@@ -237,6 +189,72 @@ function resultsPage() {
         return "bg-gray-400";
     }
   };
+
+  // Function to get result description
+  const getResultDescription = () => {
+    const lineValue = parseFloat(line);
+    const resultValue = parseFloat(finalResult);
+
+    if (resultValue > lineValue) {
+      return (
+        <span>
+          Final result was <span className="font-bold">{finalResult}</span>,
+          which is <span className="text-green-600 font-bold">OVER</span> the
+          line of {line}
+        </span>
+      );
+    } else if (resultValue < lineValue) {
+      return (
+        <span>
+          Final result was <span className="font-bold">{finalResult}</span>,
+          which is <span className="text-red-600 font-bold">UNDER</span> the
+          line of {line}
+        </span>
+      );
+    } else {
+      return (
+        <span>
+          Final result was <span className="font-bold">{finalResult}</span>,
+          which is <span className="text-yellow-600 font-bold">EXACTLY</span>{" "}
+          the line of {line}
+        </span>
+      );
+    }
+  };
+
+  // Calculate winner stats
+  const calculateStats = () => {
+    const totalParticipants = participants.length;
+    const winners = participants.filter((p) => p.isWinner).length;
+    const winnerPercentage =
+      totalParticipants > 0
+        ? Math.round((winners / totalParticipants) * 100)
+        : 0;
+
+    return {
+      totalParticipants,
+      winners,
+      winnerPercentage,
+    };
+  };
+
+  const stats = calculateStats();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen w-screen bg-gray-200 flex justify-center items-center">
+        <p>Loading results...</p>
+      </div>
+    );
+  }
+
+  if (message) {
+    return (
+      <div className="min-h-screen w-screen bg-gray-200 flex justify-center items-center">
+        <p>{message}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-screen bg-gray-200 flex-auto">
@@ -292,86 +310,166 @@ function resultsPage() {
       </header>
 
       <div className="flex mt-4 mx-8 justify-between">
-        <div className="flex flex-row items-center">
-          <h2 className="text-black-400 font-bold p-2 text-xl">Deadline:</h2>
-          <h2 className="text-black-400 font-bold p-1 text-xl rounded bg-red-400">
-            &nbsp;{formattedDate}&nbsp;
-          </h2>
+        <div className="flex flex-col">
+          <div className="flex flex-row items-center mb-2">
+            <h2 className="text-black-400 font-bold p-2 text-xl">Game ID:</h2>
+            <h2 className="text-black-400 font-bold p-1 text-xl rounded bg-blue-200">
+              &nbsp;#{gameid}&nbsp;
+            </h2>
+          </div>
+          <div className="flex flex-row items-center">
+            <h2 className="text-black-400 font-bold p-2 text-xl">
+              Deadline was:
+            </h2>
+            <h2 className="text-black-400 font-bold p-1 text-xl rounded bg-gray-300">
+              &nbsp;{formattedDate}&nbsp;
+            </h2>
+          </div>
         </div>
-        <h2 className="text-black-400 font-bold p-2 text-xl">#{gameid}</h2>
-      </div>
-      <div className="flex flex-row items-center mx-8">
-        <h2 className="text-black-400 font-bold p-2 text-xl">Countdown:</h2>
-        <h2 className="text-black-400 font-bold p-1 text-xl rounded bg-green-400">
-          &nbsp;{countdown}&nbsp;
-        </h2>
-      </div>
-      <div className="relative pt-2 w-full items-center flex flex-col">
-        <div className="flex gap-12 justify-center items-center pb-10">
-          <h1 className="font-Modak text-7xl drop-shadow-lg">{gameName}</h1>
+        <div className="flex flex-col">
+          <Link href="/home">
+            <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+              Back to Home
+            </button>
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 justify-center items-center">
-          <h2 className="font-bold text-xl drop-shadow-lg">{betDescription}</h2>
-          <h2 className="font-bold text-xl">
-            Game Leader has set the line to:&nbsp;
-            <span className="font-bold text-xl p-1 bg-sky-300 rounded">
-              {line}
-            </span>
-          </h2>
-        </div>
-        {message && <span className="mt-2">{message}</span>}
       </div>
 
-      {/* Participants Section */}
-      <div className="relative mt-10 w-full items-center flex flex-col">
-        <h2 className="font-bold text-2xl mb-14">Game Participants</h2>
+      {/* GRID STARTS HERE */}
+      <section className="grid grid-cols-12 gap-4 mt-8">
+        {/* FIRST COLUMN - Statistics */}
+        <div className="col-span-3 flex items-start justify-center">
+          <Card className="w-11/12 shadow-lg bg-white">
+            <CardContent className="p-6">
+              <h3 className="font-bold text-xl mb-4">Results Statistics</h3>
 
-        <div className="flex flex-wrap justify-center gap-6 max-w-3xl">
-          {participants.length > 0 ? (
-            participants.map((participant) => (
-              <div
-                key={participant.id}
-                className="flex flex-col items-center mb-4"
-              >
-                {/* Circular card with bet choice */}
-                <div className="w-24 h-24 rounded-full bg-sky-200 flex items-center justify-center mb-2 border border-gray-300">
-                  <div
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
-                      participant.bet
-                    )}`}
-                  >
-                    {participant.bet || "No bet"}
-                  </div>
+              <div className="space-y-4">
+                <div className="p-3 bg-blue-100 rounded-lg">
+                  <p className="text-sm text-gray-700">Total Participants</p>
+                  <p className="text-2xl font-bold">
+                    {stats.totalParticipants}
+                  </p>
                 </div>
 
-                {/* Username and crown below the circle */}
-                <div className="text-center">
-                  {/* Display crown for game creator/leader */}
-                  {isUserCreator(participant.user_id) && (
-                    <div className="text-xl text-center mb-1">👑</div>
-                  )}
+                <div className="p-3 bg-green-100 rounded-lg">
+                  <p className="text-sm text-gray-700">Winners</p>
+                  <p className="text-2xl font-bold">{stats.winners}</p>
+                </div>
 
-                  {/* Username - accessing from profiles join */}
-                  <p className="font-bold text-center">
-                    {participant.profiles?.username || "User"}
+                <div className="p-3 bg-purple-100 rounded-lg">
+                  <p className="text-sm text-gray-700">Success Rate</p>
+                  <p className="text-2xl font-bold">
+                    {stats.winnerPercentage}%
                   </p>
-
-                  {/* Highlight current user */}
-                  {participant.user_id === currentUserId && (
-                    <p className="text-xs mt-1 text-blue-600 font-semibold">
-                      (You)
-                    </p>
-                  )}
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No participants have joined yet.</p>
-          )}
+            </CardContent>
+          </Card>
         </div>
-      </div>
+
+        {/* SECOND COLUMN - Main content */}
+        <div className="col-span-6 pt-2 w-full items-center flex flex-col">
+          <div className="flex flex-col gap-6 justify-center items-center w-full">
+            <h1 className="font-Modak text-5xl drop-shadow-lg text-center">
+              {gameName} Results
+            </h1>
+
+            <Card className="w-full shadow-lg bg-white mb-6">
+              <CardContent className="p-6">
+                <h2 className="font-bold text-xl mb-2 text-center">
+                  {betDescription}
+                </h2>
+                <div className="flex flex-col gap-4 items-center justify-center text-center mt-4">
+                  <div className="p-3 bg-blue-100 rounded-lg w-full">
+                    <p className="font-medium">Line was set to</p>
+                    <p className="text-2xl font-bold">{line}</p>
+                  </div>
+
+                  <div className="p-3 bg-purple-100 rounded-lg w-full">
+                    <p className="font-medium">Final Result</p>
+                    <p className="text-2xl font-bold">{finalResult}</p>
+                  </div>
+
+                  <div className="mt-2 text-lg">{getResultDescription()}</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Participants Section with Winners Highlighted */}
+            <div className="w-full">
+              <h2 className="font-bold text-2xl mb-6 text-center">
+                Participants & Winners
+              </h2>
+
+              <div className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto">
+                {participants.length > 0 ? (
+                  participants.map((participant) => (
+                    <div
+                      key={participant.id}
+                      className={`flex flex-col items-center mb-6 transition-all duration-500 transform ${
+                        participant.isWinner ? "scale-110" : "scale-100"
+                      }`}
+                    >
+                      {/* Circular card with bet choice */}
+                      <div
+                        className={`w-24 h-24 rounded-full flex items-center justify-center mb-2 border-4 shadow-lg ${
+                          participant.isWinner
+                            ? "border-yellow-400 animate-pulse bg-gradient-to-r from-yellow-200 to-yellow-100"
+                            : "border-gray-300 bg-sky-200"
+                        }`}
+                      >
+                        <div
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${getBetColor(
+                            participant.bet
+                          )}`}
+                        >
+                          {participant.bet || "No bet"}
+                        </div>
+                      </div>
+
+                      {/* Username and crown below the circle */}
+                      <div className="text-center">
+                        {/* Display crown for game creator/leader */}
+                        {isUserCreator(participant.user_id) && (
+                          <div className="text-xl text-center mb-1">👑</div>
+                        )}
+
+                        {/* Username */}
+                        <p className="font-bold text-center">
+                          {participant.username || "User"}
+                        </p>
+
+                        {/* Winner badge */}
+                        {participant.isWinner && (
+                          <div className="mt-1 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                            WINNER! 🏆
+                          </div>
+                        )}
+
+                        {/* Highlight current user */}
+                        {participant.user_id === currentUserId && (
+                          <p className="text-xs mt-1 text-blue-600 font-semibold">
+                            (You)
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">
+                    No participants joined this game.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* LAST COLUMN - Share Results */}
+        <div className="col-span-3 flex items-start justify-center"></div>
+      </section>
     </div>
   );
 }
 
-export default resultsPage;
+export default ResultsPage;
