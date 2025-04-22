@@ -51,9 +51,6 @@ function lobbyPage() {
 
   useEffect(() => {
     if (!deadline || isGameEnded) {
-      if (isGameEnded) {
-        router.push(`/results?gameid=${gameid}`);
-      }
       return;
     }
 
@@ -65,14 +62,12 @@ function lobbyPage() {
       const timeRemaining = deadlineDate.getTime() - now.getTime();
 
       if (timeRemaining <= 0) {
-        setCountdown(
-          "Deadline to place a bet has already passed, please join or create a new game!"
-        );
+        setCountdown("Time's up! Game leader must submit final result.");
         setIsGameEnded(true);
         clearInterval(timer);
 
-        // If the current user is the creator, show the result popup when deadline is reached
-        if (currentUserId === creatorId && !showResultPopup) {
+        // If the current user is the creator, force show the result popup
+        if (currentUserId === creatorId) {
           setShowResultPopup(true);
         }
       } else {
@@ -106,7 +101,6 @@ function lobbyPage() {
     showResultPopup,
     isGameEnded,
     gameid,
-    router,
   ]);
 
   // Fetch game details and participants
@@ -425,8 +419,9 @@ function lobbyPage() {
                           Submit Final Result
                         </h4>
                         <p className="text-sm text-gray-500">
-                          As the game leader, enter the final result to end the
-                          game.
+                          {isGameEnded
+                            ? "Time's up! You must submit the final result to end the game."
+                            : "As the game leader, enter the final result to end the game."}
                         </p>
                       </div>
 
@@ -463,12 +458,14 @@ function lobbyPage() {
                           >
                             Submit & End Game
                           </button>
-                          <button
-                            className="px-4 py-2 rounded font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
-                            onClick={() => setShowResultPopup(false)}
-                          >
-                            Cancel
-                          </button>
+                          {!isGameEnded && (
+                            <button
+                              className="px-4 py-2 rounded font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
+                              onClick={() => setShowResultPopup(false)}
+                            >
+                              Cancel
+                            </button>
+                          )}
                         </div>
                       </form>
                     </div>
