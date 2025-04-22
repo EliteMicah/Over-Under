@@ -52,7 +52,7 @@ function lobbyPage() {
   useEffect(() => {
     if (!deadline || isGameEnded) {
       // If game has ended and user is not the creator, redirect to results
-      if (isGameEnded && currentUserId !== creatorId) {
+      if (finalResult && currentUserId !== creatorId) {
         router.push(`/results?gameid=${gameid}`);
       }
       return;
