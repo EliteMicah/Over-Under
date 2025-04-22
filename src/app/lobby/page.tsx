@@ -35,7 +35,6 @@ function lobbyPage() {
   const [creatorId, setCreatorId] = useState("");
   const [currentUserId, setCurrentUserId] = useState("");
 
-  const currentDate = new Date();
   const customDateFormatter = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
     year: "numeric",
@@ -51,9 +50,11 @@ function lobbyPage() {
     : "";
 
   useEffect(() => {
-    if (!deadline || !isGameEnded) return;
-    else {
-      router.push(`/results?gameid=${gameid}`);
+    if (!deadline || isGameEnded) {
+      if (isGameEnded) {
+        router.push(`/results?gameid=${gameid}`);
+      }
+      return;
     }
 
     const deadlineDate = new Date(deadline);
@@ -87,19 +88,26 @@ function lobbyPage() {
       }
     };
 
+    timer = setInterval(updateCountdown, 1000);
+
     if (deadline && !isNaN(new Date(deadline).getTime())) {
       // Run once immediately to set initial state
       updateCountdown();
-
-      // Set up interval
-      timer = setInterval(updateCountdown, 1000);
 
       // Cleanup interval on component unmount or when dependencies change
       return () => {
         if (timer) clearInterval(timer);
       };
     }
-  }, [deadline, currentUserId, creatorId, showResultPopup, isGameEnded]);
+  }, [
+    deadline,
+    currentUserId,
+    creatorId,
+    showResultPopup,
+    isGameEnded,
+    gameid,
+    router,
+  ]);
 
   // Fetch game details and participants
   const fetchGameDetails = async () => {
@@ -209,12 +217,13 @@ function lobbyPage() {
       const gameidParam = query.get("gameid");
 
       if (gameidParam) {
-        const channel = supabase
+        // Subscribe to game_bets changes
+        const betsChannel = supabase
           .channel("game_bets_changes")
           .on(
             "postgres_changes",
             {
-              event: "*",
+              event: "UPDATE",
               schema: "public",
               table: "game_bets",
               filter: `game_id=eq.${gameidParam}`,
@@ -227,8 +236,30 @@ function lobbyPage() {
           )
           .subscribe();
 
+        // Subscribe to games table changes to check if game has ended
+        const gamesChannel = supabase
+          .channel("games_changes")
+          .on(
+            "postgres_changes",
+            {
+              event: "UPDATE",
+              schema: "public",
+              table: "games",
+              filter: `gameid=eq.${gameidParam}`,
+            },
+            async (payload: { new: { bet_ended: boolean } }) => {
+              console.log("Game update received:", payload);
+              if (payload.new?.bet_ended) {
+                // Game has ended, redirect to results
+                router.push(`/results?gameid=${gameidParam}`);
+              }
+            }
+          )
+          .subscribe();
+
         return () => {
-          supabase.removeChannel(channel);
+          supabase.removeChannel(betsChannel);
+          supabase.removeChannel(gamesChannel);
         };
       }
     };
@@ -244,7 +275,7 @@ function lobbyPage() {
     return () => {
       if (cleanupFn) cleanupFn();
     };
-  }, [gameid]);
+  }, [gameid, router]);
 
   // Function to determine if a user is the game creator/leader
   const isUserCreator = (userId: string) => {
