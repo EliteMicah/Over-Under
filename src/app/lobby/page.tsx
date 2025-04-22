@@ -51,6 +51,10 @@ function lobbyPage() {
 
   useEffect(() => {
     if (!deadline || isGameEnded) {
+      // If game has ended and user is not the creator, redirect to results
+      if (isGameEnded && currentUserId !== creatorId) {
+        router.push(`/results?gameid=${gameid}`);
+      }
       return;
     }
 
@@ -69,6 +73,9 @@ function lobbyPage() {
         // If the current user is the creator, force show the result popup
         if (currentUserId === creatorId) {
           setShowResultPopup(true);
+        } else {
+          // If user is not the creator, redirect to results
+          router.push(`/results?gameid=${gameid}`);
         }
       } else {
         const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
@@ -101,6 +108,7 @@ function lobbyPage() {
     showResultPopup,
     isGameEnded,
     gameid,
+    router,
   ]);
 
   // Fetch game details and participants
@@ -136,6 +144,10 @@ function lobbyPage() {
         // Check if the game is already ended
         if (gameData.bet_ended) {
           setIsGameEnded(true);
+          // If user is not the creator, redirect to results
+          if (currentUserId !== gameData.creator_id) {
+            router.push(`/results?gameid=${gameidParam}`);
+          }
         }
 
         // Get all the bets for this game including username
